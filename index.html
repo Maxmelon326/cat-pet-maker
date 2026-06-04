@@ -230,7 +230,7 @@ footer a:hover{color:var(--pink)}
   </div>
 </div>
 
-<footer>AI 由 <a href="https://huggingface.co/nerijs/pixel-art-xl" target="_blank">nerijs/pixel-art-xl</a> 生成 · 灵感 <a href="https://petdex.crafter.run" target="_blank">Petdex</a></footer>
+<footer>AI 由 FLUX.1-schnell · <a href="https://huggingface.co/black-forest-labs/FLUX.1-schnell" target="_blank">black-forest-labs/FLUX.1-schnell</a> 生成 · 灵感 <a href="https://petdex.crafter.run" target="_blank">Petdex</a></footer>
 </div>
 
 <script>
@@ -241,7 +241,7 @@ const FW=192,FH=208,COLS=8,ROWS=9;
 const SSW=FW*COLS,SSH=FH*ROWS;
 
 // Use the serverless inference API - correct CORS-enabled endpoint
-const HF_API = 'https://api-inference.huggingface.co/models/nerijs/pixel-art-xl';
+const HF_API = 'https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell/v1/text-to-image';
 
 const STATES=[
   {name:'idle',         lbl:'IDLE',    cls:'s-idle', emoji:'😴',
@@ -326,14 +326,11 @@ async function callHF(prompt, seed){
   const body=JSON.stringify({
     inputs: prompt,
     parameters:{
-      negative_prompt:'photo, realistic, 3d render, blurry, background, scenery, text, watermark, multiple cats, cut off',
-      num_inference_steps:20,
-      guidance_scale:7,
+      num_inference_steps:4,
       width:512, height:512,
-      seed: seed||Math.floor(Math.random()*99999),
     },
     options:{
-      wait_for_model: true,   // ← KEY: tells HF to wait instead of returning 503
+      wait_for_model: true,
       use_cache: false,
     }
   });
