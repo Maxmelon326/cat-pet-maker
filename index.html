@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐱 Cat.Pet Maker — 把你的猫变成桌面像素伙伴</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a12;
+  --surface: #0e0a1c;
+  --surface2: #110d1f;
+  --border: #2a1e4a;
+  --border2: #3a2860;
+  --pink: #ff8bdb;
+  --purple: #9980c0;
+  --muted: #6a5a8a;
+  --dim: #3a2860;
+  --text: #e8e0f0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans SC', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.scanlines {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.025) 2px, rgba(0,0,0,0.025) 4px);
+  pointer-events: none; z-index: 0;
+}
+
+.container {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+  position: relative; z-index: 1;
+}
+
+/* ── Header ── */
+.header { text-align: center; margin-bottom: 3rem; }
+
+.logo {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.25rem;
+  color: var(--pink);
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 30px rgba(255,139,219,0.4);
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.tagline {
+  color: var(--purple);
+  font-size: 0.9rem;
+  font-weight: 300;
+  margin-bottom: 1.25rem;
+}
+
+.badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+.badge {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.38rem;
+  padding: 5px 10px;
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  color: var(--muted);
+  background: var(--surface);
+}
+
+/* ── Upload ── */
+.upload-zone {
+  background: var(--surface2);
+  border: 2px dashed var(--border2);
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.upload-zone::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(255,139,219,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.upload-zone:hover,
+.upload-zone.dragover {
+  border-color: var(--pink);
+  background: #170e2a;
+  box-shadow: 0 0 40px rgba(255,139,219,0.08), inset 0 0 40px rgba(255,139,219,0.03);
+}
+
+.upload-zone input[type="file"] {
+  position: absolute; inset: 0;
+  opacity: 0; cursor: pointer;
+  width: 100%; height: 100%;
+  font-size: 0; /* hide any browser UI */
+}
+
+.upload-icon-wrap {
+  width: 72px; height: 72px;
+  margin: 0 auto 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem;
+  transition: transform 0.2s;
+}
+
+.upload-zone:hover .upload-icon-wrap { transform: scale(1.08); }
+
+.upload-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.6rem;
+  color: var(--pink);
+  margin-bottom: 0.6rem;
+  line-height: 1.8;
+}
+
+.upload-desc {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.upload-desc strong { color: var(--purple); font-weight: 400; }
+
+/* ── Preview Grid ── */
+.preview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 500px) { .preview-grid { grid-template-columns: 1fr; } }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.panel-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.42rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.75rem;
+}
+
+.photo-placeholder {
+  width: 100%; aspect-ratio: 1;
+  background: #160e28;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3rem; color: var(--dim);
+}
+
+.photo-preview {
+  width: 100%; aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 6px;
+  display: none;
+}
+
+.pixel-canvas-wrap {
+  width: 100%; aspect-ratio: 1;
+  background: #160e28;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+
+.pixel-placeholder {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.42rem;
+  color: var(--dim);
+  text-align: center;
+  line-height: 2.2;
+}
+
+#pixelCanvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  width: 128px; height: 128px;
+  display: none;
+}
+
+/* ── Generate Button ── */
+.btn-generate {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.6rem;
+  padding: 1rem 2rem;
+  width: 100%;
+  border: 2px solid var(--pink);
+  border-radius: 6px;
+  background: #1a0830;
+  color: var(--pink);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.08em;
+  box-shadow: 0 4px 0 #6b1a5a, 0 0 0 0 rgba(255,139,219,0);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-generate::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--pink);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.btn-generate:hover:not(:disabled) {
+  background: #250c42;
+  box-shadow: 0 6px 0 #6b1a5a, 0 0 20px rgba(255,139,219,0.2);
+  transform: translateY(-2px);
+}
+
+.btn-generate:hover:not(:disabled)::after { opacity: 0.05; }
+
+.btn-generate:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #6b1a5a;
+}
+
+.btn-generate:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ── Progress ── */
+.progress-wrap { margin-top: 1rem; display: none; }
+
+.progress-bar {
+  width: 100%; height: 6px;
+  background: #1e1535;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--pink), #a855f7, var(--pink));
+  background-size: 200% 100%;
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.4s ease;
+  animation: shimmer 1.5s linear infinite;
+}
+
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+.progress-text {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.42rem;
+  color: var(--purple);
+  margin-top: 0.6rem;
+  min-height: 1.4em;
+}
+
+/* ── Divider ── */
+hr.divider {
+  border: none;
+  border-top: 1px solid #1e1535;
+  margin: 2rem 0;
+}
+
+/* ── Spritesheet ── */
+#spriteSection { display: none; }
+
+.spritesheet-scroll {
+  background: #07040f;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  overflow-x: auto;
+  margin-top: 0.75rem;
+}
+
+#spritesheetCanvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+}
+
+.helper {
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-top: 0.6rem;
+}
+
+.mono {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.55em;
+  color: var(--purple);
+  background: var(--surface2);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+/* ── Desktop Preview ── */
+#desktopSection { display: none; margin-top: 1rem; }
+
+.desktop-preview {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  height: 220px;
+  background: linear-gradient(135deg, #0d0820 0%, #1a0d30 50%, #0a1028 100%);
+}
+
+.desktop-icons {
+  position: absolute; top: 12px; left: 12px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+.desktop-icon {
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+}
+
+.status-badge {
+  position: absolute; top: 10px; right: 10px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.35rem;
+  padding: 4px 8px;
+  border-radius: 3px;
+  z-index: 4;
+  transition: all 0.3s;
+}
+
+.s-idle   { background: rgba(74,222,128,0.1); color: #4ade80; border: 1px solid #4ade80; }
+.s-run    { background: rgba(251,146,60,0.1);  color: #fb923c; border: 1px solid #fb923c; }
+.s-wave   { background: rgba(96,165,250,0.1);  color: #60a5fa; border: 1px solid #60a5fa; }
+.s-fail   { background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid #f87171; }
+
+.desktop-pet {
+  position: absolute;
+  bottom: 44px; right: 24px;
+  cursor: grab; user-select: none;
+  z-index: 3;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+  animation: petFloat 2.5s ease-in-out infinite;
+  transition: filter 0.2s;
+}
+
+.desktop-pet:hover { filter: drop-shadow(0 4px 14px rgba(255,139,219,0.5)); }
+.desktop-pet:active { cursor: grabbing; }
+
+@keyframes petFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+#petSpriteCanvas {
+  width: 80px; height: 80px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+}
+
+.taskbar {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 36px;
+  background: rgba(8,4,16,0.92);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 1rem; gap: 8px;
+  z-index: 2;
+}
+
+.tb-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+.tb-text {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.38rem;
+  color: var(--dim);
+  margin-left: 6px;
+}
+
+.anim-controls {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.anim-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.42rem;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.anim-btn:hover, .anim-btn.active {
+  border-color: var(--pink);
+  color: var(--pink);
+  background: #1e0f35;
+}
+
+/* ── Download ── */
+#downloadRow { display: none; margin-top: 1.25rem; }
+
+.dl-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 420px) { .dl-grid { grid-template-columns: 1fr; } }
+
+.dl-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.45rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--purple);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+  box-shadow: 3px 3px 0 var(--bg);
+  line-height: 1.8;
+}
+
+.dl-btn span { color: var(--dim); font-size: 0.85em; }
+
+.dl-btn:hover:not(:disabled) {
+  border-color: var(--pink);
+  color: var(--pink);
+  background: #1a0f2e;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--bg);
+}
+
+.dl-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* ── Install Guide ── */
+#installGuide { display: none; margin-top: 1.25rem; }
+
+.code-block {
+  background: #07040f;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-top: 0.75rem;
+  overflow-x: auto;
+}
+
+.code-line {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.42rem;
+  line-height: 2.6;
+  white-space: nowrap;
+}
+
+.c-comment { color: #3a8a5a; }
+.c-cmd { color: var(--text); }
+.c-arg { color: var(--pink); }
+
+/* ── Steps ── */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 500px) { .steps-grid { grid-template-columns: 1fr; } }
+
+.step-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.step-num {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1rem;
+  color: var(--dim);
+  margin-bottom: 0.5rem;
+}
+
+.step-title { font-size: 0.82rem; color: #c8b8e0; font-weight: 500; margin-bottom: 0.35rem; }
+.step-desc { font-size: 0.68rem; color: var(--muted); line-height: 1.6; }
+
+/* ── Footer ── */
+footer {
+  margin-top: 3rem;
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--dim);
+  line-height: 2;
+}
+
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--pink); }
+</style>
+</head>
+<body>
+<div class="scanlines"></div>
+
+<div class="container">
+
+  <!-- Header -->
+  <header class="header">
+    <span class="logo">🐱 CAT.PET MAKER</span>
+    <p class="tagline">把你的猫变成桌面像素伙伴，兼容 Petdex / Codex</p>
+    <div class="badges">
+      <span class="badge">纯前端 · 无需服务器</span>
+      <span class="badge">照片不离开你的设备</span>
+      <span class="badge">Petdex 格式兼容</span>
+      <span class="badge">免费开源</span>
+    </div>
+  </header>
+
+  <!-- Upload Zone -->
+  <div class="upload-zone" id="uploadZone">
+    <input type="file" id="fileInput" accept="image/*">
+    <div class="upload-icon-wrap">📷</div>
+    <div class="upload-title">点击选择 / 拖拽上传</div>
+    <p class="upload-desc">
+      支持 <strong>JPG · PNG · WEBP · GIF</strong><br>
+      照片只在你的浏览器里处理，不会上传到任何服务器
+    </p>
+  </div>
+
+  <!-- Preview -->
+  <div class="preview-grid">
+    <div class="panel">
+      <div class="panel-title">📸 原始照片</div>
+      <div class="photo-placeholder" id="photoPlaceholder">🐱</div>
+      <img id="photoPreview" class="photo-preview" alt="猫咪照片">
+    </div>
+    <div class="panel">
+      <div class="panel-title">🎮 像素化预览</div>
+      <div class="pixel-canvas-wrap">
+        <div class="pixel-placeholder" id="pixelPlaceholder">上传照片后<br>自动像素化</div>
+        <canvas id="pixelCanvas"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generate -->
+  <button class="btn-generate" id="generateBtn" disabled>
+    ✦ 生成精灵动画
+  </button>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-text" id="progressText"></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Spritesheet -->
+  <div id="spriteSection" class="panel">
+    <div class="panel-title">🗂 精灵表（Spritesheet）</div>
+    <div class="spritesheet-scroll">
+      <canvas id="spritesheetCanvas"></canvas>
+    </div>
+    <p class="helper">
+      标准格式 <span class="mono">1536 × 1872</span>，8列 × 9行，每帧 <span class="mono">192 × 208px</span>，与 Petdex / Codex 完全兼容。
+    </p>
+  </div>
+
+  <!-- Desktop Preview -->
+  <div id="desktopSection" class="panel">
+    <div class="panel-title">🖥 桌面预览（可拖动）</div>
+    <div class="desktop-preview" id="desktopPreview">
+      <div class="desktop-icons">
+        <div class="desktop-icon">📁</div>
+        <div class="desktop-icon">🌐</div>
+        <div class="desktop-icon">⚙️</div>
+      </div>
+      <div class="status-badge s-idle" id="statusBadge">IDLE</div>
+      <div class="desktop-pet" id="desktopPet">
+        <canvas id="petSpriteCanvas" width="80" height="80"></canvas>
+      </div>
+      <div class="taskbar">
+        <div class="tb-dot" style="background:#ff5f57"></div>
+        <div class="tb-dot" style="background:#febc2e"></div>
+        <div class="tb-dot" style="background:#28c840"></div>
+        <span class="tb-text">我的桌面</span>
+      </div>
+    </div>
+
+    <div class="anim-controls">
+      <button class="anim-btn active" data-row="0" data-label="IDLE" data-cls="s-idle">待机</button>
+      <button class="anim-btn" data-row="1" data-label="RUNNING →" data-cls="s-run">右跑</button>
+      <button class="anim-btn" data-row="2" data-label="RUNNING ←" data-cls="s-run">左跑</button>
+      <button class="anim-btn" data-row="3" data-label="WAVING" data-cls="s-wave">招手</button>
+      <button class="anim-btn" data-row="4" data-label="JUMPING" data-cls="s-wave">跳跃</button>
+      <button class="anim-btn" data-row="5" data-label="FAILED" data-cls="s-fail">失败</button>
+      <button class="anim-btn" data-row="6" data-label="WAITING" data-cls="s-idle">等待</button>
+      <button class="anim-btn" data-row="8" data-label="REVIEW" data-cls="s-wave">复查</button>
+    </div>
+  </div>
+
+  <!-- Download -->
+  <div id="downloadRow">
+    <div class="dl-grid">
+      <button class="dl-btn" id="dlSpritesheet" disabled>
+        ⬇ 下载 spritesheet.webp<br>
+        <span>用于 Petdex / Codex</span>
+      </button>
+      <button class="dl-btn" id="dlJson" disabled>
+        ⬇ 下载 pet.json<br>
+        <span>宠物元数据</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Install Guide -->
+  <div id="installGuide">
+    <div class="panel">
+      <div class="panel-title">🚀 安装到桌面（Petdex + Codex）</div>
+      <div class="code-block">
+        <div class="code-line"><span class="c-comment"># 1. 创建宠物目录</span></div>
+        <div class="code-line"><span class="c-cmd">mkdir -p</span> <span class="c-arg">~/.codex/pets/my-cat</span></div>
+        <div class="code-line">&nbsp;</div>
+        <div class="code-line"><span class="c-comment"># 2. 将下载的两个文件放入该目录</span></div>
+        <div class="code-line"><span class="c-cmd">mv</span> <span class="c-arg">spritesheet.webp</span> <span class="c-cmd">~/.codex/pets/my-cat/</span></div>
+        <div class="code-line"><span class="c-cmd">mv</span> <span class="c-arg">pet.json</span> <span class="c-cmd">~/.codex/pets/my-cat/</span></div>
+        <div class="code-line">&nbsp;</div>
+        <div class="code-line"><span class="c-comment"># 3. 安装 Petdex 桌面应用</span></div>
+        <div class="code-line"><span class="c-cmd">npx petdex install desktop</span></div>
+        <div class="code-line"><span class="c-cmd">npx petdex hooks install</span></div>
+        <div class="code-line"><span class="c-cmd">npx petdex desktop start</span></div>
+      </div>
+      <p class="helper" style="margin-top:0.75rem">
+        然后在 Codex 中 <span class="mono">Settings → Appearance → Pets</span> 选择 my-cat ✦<br>
+        或直接用 <span class="mono">npx petdex toggle</span> 唤醒桌面宠物
+      </p>
+    </div>
+  </div>
+
+  <!-- Steps -->
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-title">上传照片</div>
+      <div class="step-desc">任意角度均可，侧面轮廓清晰效果最佳</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-title">生成精灵</div>
+      <div class="step-desc">自动生成 9 种动画状态的 72 帧像素精灵</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-title">放到桌面</div>
+      <div class="step-desc">下载两个文件，配合 Petdex CLI 即可运行</div>
+    </div>
+  </div>
+
+  <footer>
+    纯前端实现 · 所有处理在本地浏览器完成 · 照片不会离开你的设备<br>
+    灵感来源：<a href="https://petdex.crafter.run" target="_blank">Petdex</a> ·
+    兼容格式：<a href="https://github.com/crafter-station/petdex" target="_blank">crafter-station/petdex</a>
+  </footer>
+
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const FRAME_W = 192, FRAME_H = 208, COLS = 8, ROWS = 9;
+  const SS_W = FRAME_W * COLS, SS_H = FRAME_H * ROWS;
+
+  const STATES = [
+    { name: 'idle',          label: 'IDLE',       row: 0 },
+    { name: 'running-right', label: 'RUNNING →',  row: 1 },
+    { name: 'running-left',  label: 'RUNNING ←',  row: 2 },
+    { name: 'waving',        label: 'WAVING',      row: 3 },
+    { name: 'jumping',       label: 'JUMPING',     row: 4 },
+    { name: 'failed',        label: 'FAILED',      row: 5 },
+    { name: 'waiting',       label: 'WAITING',     row: 6 },
+    { name: 'running',       label: 'RUNNING',     row: 7 },
+    { name: 'review',        label: 'REVIEW',      row: 8 },
+  ];
+
+  let uploadedImage = null;
+  let palette = [];
+  let pixelFrames = []; // pixelFrames[row][frame] = offscreen canvas
+  let currentRow = 0;
+  let animFrame = 0;
+  let animTimer = null;
+  let catSlug = 'my-cat';
+
+  // DOM refs
+  const fileInput        = document.getElementById('fileInput');
+  const uploadZone       = document.getElementById('uploadZone');
+  const photoPreview     = document.getElementById('photoPreview');
+  const photoPlaceholder = document.getElementById('photoPlaceholder');
+  const pixelCanvas      = document.getElementById('pixelCanvas');
+  const pixelCtx         = pixelCanvas.getContext('2d');
+  const pixelPlaceholder = document.getElementById('pixelPlaceholder');
+  const generateBtn      = document.getElementById('generateBtn');
+  const progressWrap     = document.getElementById('progressWrap');
+  const progressFill     = document.getElementById('progressFill');
+  const progressText     = document.getElementById('progressText');
+  const spritesheetCanvas = document.getElementById('spritesheetCanvas');
+  const ssCtx            = spritesheetCanvas.getContext('2d');
+  const petSpriteCanvas  = document.getElementById('petSpriteCanvas');
+  const petCtx           = petSpriteCanvas.getContext('2d');
+  const statusBadge      = document.getElementById('statusBadge');
+  const desktopPet       = document.getElementById('desktopPet');
+
+  // ── Drag & drop ──
+  uploadZone.addEventListener('dragover', e => {
+    e.preventDefault();
+    uploadZone.classList.add('dragover');
+  });
+  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+  uploadZone.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadZone.classList.remove('dragover');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) loadFile(f);
+  });
+
+  fileInput.addEventListener('change', e => {
+    if (e.target.files[0]) loadFile(e.target.files[0]);
+  });
+
+  function loadFile(file) {
+    catSlug = file.name
+      .replace(/\.[^.]+$/, '')
+      .replace(/[^a-z0-9]/gi, '-')
+      .toLowerCase()
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '') || 'my-cat';
+
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        uploadedImage = img;
+        photoPreview.src = ev.target.result;
+        photoPreview.style.display = 'block';
+        photoPlaceholder.style.display = 'none';
+        buildPixelPreview(img);
+        generateBtn.disabled = false;
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ── Quick 32×32 pixel preview ──
+  function buildPixelPreview(img) {
+    const SIZE = 32;
+    pixelCanvas.width = SIZE;
+    pixelCanvas.height = SIZE;
+    const tmp = document.createElement('canvas');
+    tmp.width = SIZE; tmp.height = SIZE;
+    const tCtx = tmp.getContext('2d');
+    tCtx.drawImage(img, 0, 0, SIZE, SIZE);
+    pixelCtx.imageSmoothingEnabled = false;
+    pixelCtx.drawImage(tmp, 0, 0);
+    pixelPlaceholder.style.display = 'none';
+    pixelCanvas.style.display = 'block';
+  }
+
+  // ── Colour quantisation (simple median-cut–style bucket) ──
+  function extractPalette(img, count) {
+    const c = document.createElement('canvas');
+    c.width = 24; c.height = 24;
+    const ctx = c.getContext('2d');
+    ctx.drawImage(img, 0, 0, 24, 24);
+    const d = ctx.getImageData(0, 0, 24, 24).data;
+    const map = {};
+    for (let i = 0; i < d.length; i += 4) {
+      if (d[i+3] < 50) continue;
+      const key = [
+        Math.round(d[i]   / 24) * 24,
+        Math.round(d[i+1] / 24) * 24,
+        Math.round(d[i+2] / 24) * 24,
+      ].join(',');
+      map[key] = (map[key] || 0) + 1;
+    }
+    return Object.entries(map)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, count)
+      .map(([k]) => k.split(',').map(Number));
+  }
+
+  function nearestColor(r, g, b, pal) {
+    let best = pal[0], dist = Infinity;
+    for (const c of pal) {
+      const d = (c[0]-r)**2 + (c[1]-g)**2 + (c[2]-b)**2;
+      if (d < dist) { dist = d; best = c; }
+    }
+    return best;
+  }
+
+  // ── Draw one sprite frame onto a canvas ──
+  function drawFrame(ctx, img, stateIdx, frameIdx, w, h, pal) {
+    ctx.clearRect(0, 0, w, h);
+    const PIXEL = Math.max(3, Math.floor(w / 14));
+    const cols = Math.floor(w / PIXEL);
+    const rows = Math.floor(h / PIXEL);
+
+    // Sample image at pixel-art resolution
+    const src = document.createElement('canvas');
+    src.width = cols; src.height = rows;
+    const sCtx = src.getContext('2d');
+    sCtx.drawImage(img, 0, 0, cols, rows);
+    const sd = sCtx.getImageData(0, 0, cols, rows).data;
+
+    // Per-state transform params
+    const t = frameIdx / COLS;
+    const tau = t * Math.PI * 2;
+
+    let bobY    = 0;
+    let flip    = false;
+    let squashY = 1;
+    let brightness = 1;
+    let shakeX  = 0;
+
+    switch (stateIdx) {
+      case 0: // idle — gentle bob + blink
+        bobY = Math.sin(tau) * 0.6;
+        break;
+      case 1: // running right
+        bobY = Math.abs(Math.sin(tau)) * -1.2;
+        break;
+      case 2: // running left
+        bobY = Math.abs(Math.sin(tau)) * -1.2;
+        flip = true;
+        break;
+      case 3: // waving
+        bobY = Math.sin(tau) * 1.5;
+        break;
+      case 4: // jumping
+        bobY = -Math.abs(Math.sin(tau)) * 4;
+        squashY = 1 + Math.sin(tau) * 0.12;
+        break;
+      case 5: // failed
+        brightness = 0.45 + Math.abs(Math.sin(tau * 2)) * 0.3;
+        shakeX = (frameIdx % 2 === 0 ? 1 : -1) * 1;
+        break;
+      case 6: // waiting
+        bobY = Math.sin(tau * 0.5) * 0.4;
+        break;
+      case 7: // running (fast)
+        bobY = Math.abs(Math.sin(tau * 1.5)) * -1.5;
+        break;
+      case 8: // review
+        bobY = Math.sin(tau * 0.75) * 0.5;
+        brightness = 0.75 + Math.sin(tau) * 0.25;
+        break;
+    }
+
+    if (flip) { ctx.save(); ctx.scale(-1, 1); ctx.translate(-w, 0); }
+
+    const offY = Math.round(bobY);
+    const offX = Math.round(shakeX);
+
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const idx = (row * cols + col) * 4;
+        const a = sd[idx + 3];
+        if (a < 40) continue;
+
+        const [nr, ng, nb] = nearestColor(sd[idx], sd[idx+1], sd[idx+2], pal);
+        const yr = Math.round(row + offY + (row - rows * 0.5) * (squashY - 1));
+        const xr = col + offX;
+
+        const px = xr * PIXEL;
+        const py = yr * PIXEL;
+        if (px < 0 || px >= w || py < 0 || py >= h) continue;
+
+        ctx.fillStyle = `rgb(${Math.min(255, (nr * brightness)|0)},${Math.min(255, (ng * brightness)|0)},${Math.min(255, (nb * brightness)|0)})`;
+        ctx.fillRect(px, py, PIXEL, PIXEL);
+      }
+    }
+
+    // Waving arm overlay
+    if (stateIdx === 3 && frameIdx < 4) {
+      const armClr = pal[1] ? `rgb(${pal[1].join(',')})` : '#fff';
+      ctx.fillStyle = armClr;
+      const ax = flip ? Math.round(cols * 0.3) * PIXEL - PIXEL : Math.round(cols * 0.65) * PIXEL;
+      const ay = Math.round(rows * 0.28) * PIXEL + offY;
+      ctx.fillRect(ax, ay - PIXEL * 2, PIXEL * 3, PIXEL * 2);
+    }
+
+    // Running legs
+    if (stateIdx === 1 || stateIdx === 2 || stateIdx === 7) {
+      const legPhase = Math.sin(tau * 2);
+      const legClr = pal[2] ? `rgb(${pal[2].join(',')})` : '#888';
+      ctx.fillStyle = legClr;
+      const lBase = h - PIXEL * 2;
+      ctx.fillRect(Math.round(w * 0.3) + legPhase * 3, lBase, PIXEL * 2, PIXEL * 2);
+      ctx.fillRect(Math.round(w * 0.6) - legPhase * 3, lBase, PIXEL * 2, PIXEL * 2);
+    }
+
+    // Blink
+    if (stateIdx === 0 && frameIdx === 5) {
+      ctx.fillStyle = '#000';
+      const ey = Math.round(rows * 0.33) * PIXEL + offY;
+      ctx.fillRect(Math.round(cols * 0.32) * PIXEL, ey, PIXEL, 2);
+      ctx.fillRect(Math.round(cols * 0.57) * PIXEL, ey, PIXEL, 2);
+    }
+
+    if (flip) ctx.restore();
+  }
+
+  // ── Main generation ──
+  generateBtn.addEventListener('click', async () => {
+    if (!uploadedImage) return;
+    generateBtn.disabled = true;
+    progressWrap.style.display = 'block';
+    progressText.textContent = '提取色板...';
+    await tick();
+
+    palette = extractPalette(uploadedImage, 14);
+
+    spritesheetCanvas.width  = SS_W;
+    spritesheetCanvas.height = SS_H;
+    ssCtx.clearRect(0, 0, SS_W, SS_H);
+    pixelFrames = [];
+
+    for (let row = 0; row < ROWS; row++) {
+      progressFill.style.width = ((row / ROWS) * 90 + 2) + '%';
+      progressText.textContent = `生成 ${STATES[row].label} 动画... (${row+1}/${ROWS})`;
+      await tick();
+
+      const rowFrames = [];
+      for (let f = 0; f < COLS; f++) {
+        const off = document.createElement('canvas');
+        off.width = FRAME_W; off.height = FRAME_H;
+        const ctx = off.getContext('2d');
+        drawFrame(ctx, uploadedImage, row, f, FRAME_W, FRAME_H, palette);
+        ssCtx.drawImage(off, f * FRAME_W, row * FRAME_H);
+        rowFrames.push(off);
+      }
+      pixelFrames.push(rowFrames);
+    }
+
+    progressFill.style.width = '100%';
+    progressText.textContent = '✦ 完成！';
+
+    // Show sections
+    document.getElementById('spriteSection').style.display = 'block';
+    document.getElementById('desktopSection').style.display = 'block';
+    document.getElementById('downloadRow').style.display = 'block';
+    document.getElementById('installGuide').style.display = 'block';
+    document.getElementById('dlSpritesheet').disabled = false;
+    document.getElementById('dlJson').disabled = false;
+
+    // Scale spritesheet display
+    const maxDisplayW = Math.min(SS_W * 0.25, 380);
+    spritesheetCanvas.style.width  = maxDisplayW + 'px';
+    spritesheetCanvas.style.height = (maxDisplayW / SS_W * SS_H) + 'px';
+
+    generateBtn.disabled = false;
+    startAnim(0);
+
+    // Scroll to desktop preview
+    document.getElementById('desktopSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  function tick() { return new Promise(r => setTimeout(r, 16)); }
+
+  // ── Animation loop ──
+  function startAnim(row) {
+    clearInterval(animTimer);
+    currentRow = row;
+    animFrame = 0;
+    animTimer = setInterval(() => {
+      if (!pixelFrames[currentRow]) return;
+      const frame = pixelFrames[currentRow][animFrame % COLS];
+      petCtx.imageSmoothingEnabled = false;
+      petCtx.clearRect(0, 0, 80, 80);
+      petCtx.drawImage(frame, 0, 0, 80, 80);
+      animFrame = (animFrame + 1) % COLS;
+    }, 130);
+  }
+
+  document.querySelectorAll('.anim-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.anim-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const row = parseInt(btn.dataset.row);
+      statusBadge.textContent = btn.dataset.label;
+      statusBadge.className = 'status-badge ' + btn.dataset.cls;
+      startAnim(row);
+    });
+  });
+
+  // ── Drag pet in preview ──
+  let dragging = false, dragOffX = 0, dragOffY = 0;
+
+  desktopPet.addEventListener('mousedown', e => {
+    dragging = true;
+    const r = desktopPet.getBoundingClientRect();
+    dragOffX = e.clientX - r.left;
+    dragOffY = e.clientY - r.top;
+    desktopPet.style.animation = 'none';
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const pr = document.getElementById('desktopPreview').getBoundingClientRect();
+    let nx = e.clientX - pr.left - dragOffX;
+    let ny = e.clientY - pr.top  - dragOffY;
+    nx = Math.max(0, Math.min(pr.width  - 80, nx));
+    ny = Math.max(0, Math.min(pr.height - 80 - 36, ny));
+    desktopPet.style.right  = 'auto';
+    desktopPet.style.bottom = 'auto';
+    desktopPet.style.left   = nx + 'px';
+    desktopPet.style.top    = ny + 'px';
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (dragging) { dragging = false; desktopPet.style.animation = ''; }
+  });
+
+  // ── Downloads ──
+  document.getElementById('dlSpritesheet').addEventListener('click', () => {
+    spritesheetCanvas.toBlob(blob => {
+      triggerDownload(URL.createObjectURL(blob), 'spritesheet.webp');
+    }, 'image/webp', 0.95);
+  });
+
+  document.getElementById('dlJson').addEventListener('click', () => {
+    const meta = {
+      id: catSlug,
+      displayName: catSlug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+      description: `${catSlug} — a custom cat companion generated from a real photo.`,
+      spritesheetPath: 'spritesheet.webp',
+      states: STATES.map(s => ({
+        name: s.name,
+        row: s.row,
+        frames: COLS,
+        duration: 130,
+      })),
+    };
+    const blob = new Blob([JSON.stringify(meta, null, 2)], { type: 'application/json' });
+    triggerDownload(URL.createObjectURL(blob), 'pet.json');
+  });
+
+  function triggerDownload(url, filename) {
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  }
+})();
+</script>
+</body>
+</html>
