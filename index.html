@@ -16,85 +16,72 @@
 body{background:var(--bg);color:var(--text);font-family:'Noto Sans SC',sans-serif;min-height:100vh}
 .scan{position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.025) 2px,rgba(0,0,0,.025) 4px);pointer-events:none;z-index:0}
 .wrap{max-width:860px;margin:0 auto;padding:2.5rem 1.5rem 4rem;position:relative;z-index:1}
-
-/* Header */
 .hdr{text-align:center;margin-bottom:2.5rem}
 .logo{font-family:'Press Start 2P',monospace;font-size:1.1rem;color:var(--pink);text-shadow:0 0 30px rgba(255,139,219,.4);display:block;margin-bottom:.6rem}
 .sub{color:var(--purple);font-size:.85rem;font-weight:300;margin-bottom:1rem}
 .badges{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
 .badge{font-family:'Press Start 2P',monospace;font-size:.35rem;padding:4px 9px;border:1px solid var(--border2);border-radius:3px;color:var(--muted);background:var(--surface)}
 .badge.ai{border-color:#a855f7;color:#a855f7}
-
-/* Token input */
+/* token */
 .token-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1.5rem}
+.ptitle{font-family:'Press Start 2P',monospace;font-size:.4rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem}
 .token-row{display:flex;gap:.5rem;align-items:center;margin-top:.75rem}
-.token-input{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:.6rem .9rem;color:var(--text);font-family:'Press Start 2P',monospace;font-size:.45rem;letter-spacing:.05em;outline:none;transition:border-color .2s}
+.token-input{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:.6rem .9rem;color:var(--text);font-family:'Press Start 2P',monospace;font-size:.45rem;outline:none;transition:border-color .2s}
 .token-input:focus{border-color:var(--pink)}
 .token-input::placeholder{color:var(--dim)}
 .token-btn{font-family:'Press Start 2P',monospace;font-size:.45rem;padding:.6rem 1rem;border:1px solid var(--border2);border-radius:6px;background:var(--surface2);color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .15s}
 .token-btn:hover{border-color:var(--pink);color:var(--pink)}
-.token-status{font-family:'Press Start 2P',monospace;font-size:.38rem;padding:4px 10px;border-radius:3px;margin-top:.5rem;display:none}
-.status-ok{background:rgba(74,222,128,.1);color:var(--green);border:1px solid var(--green)}
-.status-err{background:rgba(248,113,113,.1);color:var(--red);border:1px solid var(--red)}
-
-/* Upload */
+.token-status{font-family:'Press Start 2P',monospace;font-size:.38rem;padding:4px 10px;border-radius:3px;margin-top:.6rem;display:none}
+.tok-ok{background:rgba(74,222,128,.1);color:var(--green);border:1px solid var(--green)}
+.tok-err{background:rgba(248,113,113,.1);color:var(--red);border:1px solid var(--red)}
+/* upload */
 .upzone{background:var(--surface2);border:2px dashed var(--border2);border-radius:12px;padding:2rem;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;margin-bottom:1.5rem}
 .upzone:hover,.upzone.over{border-color:var(--pink);background:#170e2a}
 .upzone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
 .up-icon{width:56px;height:56px;margin:0 auto .75rem;background:var(--surface);border:1px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem}
 .up-title{font-family:'Press Start 2P',monospace;font-size:.5rem;color:var(--pink);margin-bottom:.4rem}
 .up-desc{font-size:.78rem;color:var(--muted);line-height:1.6}
-
-/* Preview grid */
+/* pgrid */
 .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem}
 @media(max-width:500px){.pgrid{grid-template-columns:1fr}}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem}
-.ptitle{font-family:'Press Start 2P',monospace;font-size:.4rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem}
-.imgbox{width:100%;aspect-ratio:1;background:#07040f;border:1px dashed var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-.imgbox img{width:100%;height:100%;object-fit:cover;display:none}
-.imgbox .placeholder{font-size:2rem;color:var(--dim)}
-.imgbox canvas{image-rendering:pixelated;image-rendering:crisp-edges;width:100%;height:100%;display:none}
-
-/* Generate button */
+.imgbox{width:100%;aspect-ratio:1;background:#07040f;border:1px dashed var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:2rem;color:var(--dim)}
+.imgbox img{width:100%;height:100%;object-fit:contain;display:none}
+/* gen btn */
 .genbtn{font-family:'Press Start 2P',monospace;font-size:.55rem;padding:.9rem 2rem;width:100%;border:2px solid var(--pink);border-radius:6px;background:#1a0830;color:var(--pink);cursor:pointer;transition:all .15s;letter-spacing:.06em;box-shadow:0 4px 0 #6b1a5a;margin-bottom:1rem}
 .genbtn:hover:not(:disabled){background:#250c42;box-shadow:0 6px 0 #6b1a5a;transform:translateY(-2px)}
 .genbtn:active:not(:disabled){transform:translateY(2px);box-shadow:0 2px 0 #6b1a5a}
 .genbtn:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
-
-/* Progress */
+/* progress */
 .progwrap{display:none;margin-bottom:1rem}
-.progbar{width:100%;height:6px;background:#1e1535;border-radius:3px;overflow:hidden}
+.progbar{width:100%;height:6px;background:#1e1535;border-radius:3px;overflow:hidden;margin-bottom:.5rem}
 .progfill{height:100%;background:linear-gradient(90deg,var(--pink),#a855f7,var(--pink));background-size:200% 100%;border-radius:3px;width:0%;transition:width .5s ease;animation:shimmer 1.5s linear infinite}
 @keyframes shimmer{to{background-position:-200% 0}}
-.progtxt{font-family:'Press Start 2P',monospace;font-size:.38rem;color:var(--purple);margin-top:.5rem;min-height:1.4em}
-
-/* Gen stages grid */
-.stages{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-top:.75rem}
-@media(max-width:500px){.stages{grid-template-columns:repeat(2,1fr)}}
-.stage-card{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.5rem;text-align:center;position:relative;overflow:hidden}
-.stage-img{width:100%;aspect-ratio:1;background:#07040f;border-radius:4px;overflow:hidden;margin-bottom:.4rem;display:flex;align-items:center;justify-content:center}
-.stage-img img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;display:none}
-.stage-img .spin{font-size:1.2rem;animation:spin 1s linear infinite;display:none}
-@keyframes spin{to{transform:rotate(360deg)}}
-.stage-img .wait{font-size:1rem;color:var(--dim)}
-.stage-lbl{font-family:'Press Start 2P',monospace;font-size:.35rem;color:var(--muted)}
-.stage-card.done .stage-lbl{color:var(--green)}
-.stage-card.loading .stage-lbl{color:var(--amber)}
-
+.progtxt{font-family:'Press Start 2P',monospace;font-size:.38rem;color:var(--purple);min-height:1.4em;margin-bottom:.5rem}
+/* stage grid */
+.stages{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-top:.5rem}
+@media(min-width:600px){.stages{grid-template-columns:repeat(5,1fr)}}
+.sc{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.5rem;text-align:center}
+.sc-img{width:100%;aspect-ratio:1;background:#07040f;border-radius:4px;margin-bottom:.35rem;display:flex;align-items:center;justify-content:center;font-size:1.1rem;overflow:hidden}
+.sc-img img{width:100%;height:100%;object-fit:contain;display:none;image-rendering:pixelated}
+.sc-lbl{font-family:'Press Start 2P',monospace;font-size:.32rem;color:var(--muted)}
+.sc.done .sc-lbl{color:var(--green)}
+.sc.loading .sc-lbl{color:var(--amber)}
+.sc.err .sc-lbl{color:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.sc.loading .sc-img{animation:pulse 1s ease-in-out infinite}
 hr.div{border:none;border-top:1px solid #1e1535;margin:1.5rem 0}
-
-/* Spritesheet */
+/* spritesheet */
 #spriteSection{display:none}
 .ss-scroll{background:#07040f;border:1px solid var(--border);border-radius:8px;padding:.75rem;overflow-x:auto;margin-top:.75rem}
 #spritesheetCanvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block;margin:0 auto}
 .helper{font-size:.7rem;color:var(--muted);line-height:1.7;margin-top:.6rem}
 .mono{font-family:'Press Start 2P',monospace;font-size:.5em;color:var(--purple);background:var(--surface2);padding:2px 6px;border-radius:3px}
-
-/* Desktop preview */
+/* desktop */
 #desktopSection{display:none;margin-top:1rem}
 .deskprev{border:1px solid var(--border);border-radius:10px;overflow:hidden;position:relative;height:260px;background:linear-gradient(135deg,#0d0820,#1a0d30 50%,#0a1028)}
 .deskicons{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:8px}
-.deskicon{width:36px;height:36px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.deskicon{width:36px;height:36px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;display:flex;align-items:center;justify-content:center}
 .sbadge{position:absolute;top:10px;right:10px;font-family:'Press Start 2P',monospace;font-size:.32rem;padding:4px 8px;border-radius:3px;z-index:4}
 .s-idle{background:rgba(74,222,128,.1);color:var(--green);border:1px solid var(--green)}
 .s-run{background:rgba(251,146,60,.1);color:var(--amber);border:1px solid var(--amber)}
@@ -111,24 +98,21 @@ hr.div{border:none;border-top:1px solid #1e1535;margin:1.5rem 0}
 .actrl{display:flex;gap:6px;flex-wrap:wrap;margin-top:.75rem}
 .abtn{font-family:'Press Start 2P',monospace;font-size:.4rem;padding:.42rem .8rem;border:1px solid var(--border2);border-radius:4px;background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s}
 .abtn:hover,.abtn.active{border-color:var(--pink);color:var(--pink);background:#1e0f35}
-
-/* Downloads */
 #dlrow{display:none;margin-top:1.25rem}
 .dlgrid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
 .dlbtn{font-family:'Press Start 2P',monospace;font-size:.42rem;padding:.85rem 1rem;border:1px solid var(--border2);border-radius:8px;background:var(--surface);color:var(--purple);cursor:pointer;transition:all .15s;text-align:center;box-shadow:3px 3px 0 var(--bg);line-height:1.8}
 .dlbtn span{color:var(--dim);font-size:.85em}
 .dlbtn:hover:not(:disabled){border-color:var(--pink);color:var(--pink);background:#1a0f2e;transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--bg)}
 .dlbtn:disabled{opacity:.3;cursor:not-allowed}
-
-/* Guide */
 #guide{display:none;margin-top:1.25rem}
 .codeblock{background:#07040f;border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;margin-top:.75rem;overflow-x:auto}
 .cl{font-family:'Press Start 2P',monospace;font-size:.4rem;line-height:2.6;white-space:nowrap}
 .cc{color:#3a8a5a}.ca{color:var(--pink)}
-
 footer{margin-top:3rem;text-align:center;font-size:.7rem;color:var(--dim);line-height:2}
 footer a{color:var(--muted);text-decoration:none}
 footer a:hover{color:var(--pink)}
+/* error box */
+.errbox{background:rgba(248,113,113,.08);border:1px solid var(--red);border-radius:8px;padding:.75rem 1rem;margin-top:.75rem;font-size:.75rem;color:var(--red);line-height:1.7;display:none}
 </style>
 </head>
 <body>
@@ -139,27 +123,24 @@ footer a:hover{color:var(--pink)}
   <span class="logo">🐱 CAT.PET MAKER</span>
   <p class="sub">上传猫咪照片，AI 生成像素艺术桌面伴侣</p>
   <div class="badges">
-    <span class="badge ai">✦ AI 像素艺术生成</span>
+    <span class="badge ai">✦ AI 像素艺术</span>
     <span class="badge">Petdex / Codex 兼容</span>
-    <span class="badge">免费 · 照片不离开设备</span>
+    <span class="badge">免费 · 无需服务器</span>
   </div>
 </header>
 
-<!-- HF Token -->
 <div class="token-section panel">
   <div class="ptitle">🔑 Hugging Face Token</div>
-  <p style="font-size:.75rem;color:var(--muted);line-height:1.6;margin-bottom:.5rem">
-    用于调用 AI 像素艺术模型。免费账号即可，照片处理完全在你的浏览器中进行。<br>
-    获取方式：<a href="https://huggingface.co/settings/tokens" target="_blank" style="color:var(--purple)">huggingface.co/settings/tokens</a> → New token → Read 权限
+  <p style="font-size:.75rem;color:var(--muted);line-height:1.6;margin-bottom:.25rem">
+    免费账号即可。获取：<a href="https://huggingface.co/settings/tokens" target="_blank" style="color:var(--purple)">huggingface.co/settings/tokens</a> → New token → Read 权限
   </p>
   <div class="token-row">
-    <input type="password" class="token-input" id="tokenInput" placeholder="hf_xxxxxxxxxxxxxxxx">
-    <button class="token-btn" id="tokenSave">保存</button>
+    <input type="password" class="token-input" id="tokenInput" placeholder="hf_xxxxxxxxxxxxxxxx" autocomplete="off">
+    <button class="token-btn" id="tokenSave">💾 保存</button>
   </div>
   <div class="token-status" id="tokenStatus"></div>
 </div>
 
-<!-- Upload -->
 <div class="upzone" id="upzone">
   <input type="file" id="fileInput" accept="image/*">
   <div class="up-icon">📷</div>
@@ -167,44 +148,35 @@ footer a:hover{color:var(--pink)}
   <p class="up-desc">支持 JPG · PNG · WEBP · 照片越清晰效果越好</p>
 </div>
 
-<!-- Photo preview -->
 <div class="pgrid">
   <div class="panel">
     <div class="ptitle">📸 原始照片</div>
-    <div class="imgbox" id="photoBox">
-      <span class="placeholder">🐱</span>
-      <img id="photoImg" alt="猫咪照片">
-    </div>
+    <div class="imgbox" id="photoBox">🐱<img id="photoImg" alt="photo"></div>
   </div>
   <div class="panel">
-    <div class="ptitle">✨ AI 像素艺术（待机姿势）</div>
-    <div class="imgbox" id="pixelBox">
-      <span class="placeholder">🎨</span>
-      <img id="pixelImg" alt="像素艺术预览">
-    </div>
+    <div class="ptitle">✨ AI 像素预览</div>
+    <div class="imgbox" id="pixelBox">🎨<img id="pixelImg" alt="pixel"></div>
   </div>
 </div>
 
-<!-- Generate -->
+<div class="errbox" id="errbox"></div>
+
 <button class="genbtn" id="genBtn" disabled>✦ AI 生成所有动画帧</button>
 
 <div class="progwrap" id="progwrap">
+  <div class="progtxt" id="progtxt">初始化中...</div>
   <div class="progbar"><div class="progfill" id="progfill"></div></div>
-  <div class="progtxt" id="progtxt"></div>
-  <!-- Stage previews -->
   <div class="stages" id="stages"></div>
 </div>
 
 <hr class="div">
 
-<!-- Spritesheet -->
 <div id="spriteSection" class="panel">
   <div class="ptitle">🗂 精灵表 Spritesheet</div>
   <div class="ss-scroll"><canvas id="spritesheetCanvas"></canvas></div>
-  <p class="helper">标准格式 <span class="mono">1536×1872</span>，8列×9行，每帧 <span class="mono">192×208px</span>，Petdex/Codex 兼容</p>
+  <p class="helper">标准格式 <span class="mono">1536×1872</span> · 8列×9行 · Petdex/Codex 兼容</p>
 </div>
 
-<!-- Desktop preview -->
 <div id="desktopSection" class="panel">
   <div class="ptitle">🖥 桌面预览（可拖动）</div>
   <div class="deskprev" id="deskprev">
@@ -214,9 +186,7 @@ footer a:hover{color:var(--pink)}
       <div class="deskicon">⚙️</div>
     </div>
     <div class="sbadge s-idle" id="sbadge">IDLE</div>
-    <div class="dpet" id="dpet">
-      <canvas id="petCanvas" width="128" height="128"></canvas>
-    </div>
+    <div class="dpet" id="dpet"><canvas id="petCanvas" width="128" height="128"></canvas></div>
     <div class="taskbar">
       <div class="tbdot" style="background:#ff5f57"></div>
       <div class="tbdot" style="background:#febc2e"></div>
@@ -236,7 +206,6 @@ footer a:hover{color:var(--pink)}
   </div>
 </div>
 
-<!-- Downloads -->
 <div id="dlrow">
   <div class="dlgrid">
     <button class="dlbtn" id="dlSS" disabled>⬇ spritesheet.webp<br><span>Petdex / Codex 用</span></button>
@@ -244,7 +213,6 @@ footer a:hover{color:var(--pink)}
   </div>
 </div>
 
-<!-- Guide -->
 <div id="guide">
   <div class="panel">
     <div class="ptitle">🚀 安装到桌面</div>
@@ -255,394 +223,332 @@ footer a:hover{color:var(--pink)}
       <div class="cl"><span class="cc"># 2. 放入下载的两个文件</span></div>
       <div class="cl">mv <span class="ca">spritesheet.webp pet.json</span> ~/.codex/pets/my-cat/</div>
       <div class="cl">&nbsp;</div>
-      <div class="cl"><span class="cc"># 3. 启动桌面宠物</span></div>
+      <div class="cl"><span class="cc"># 3. 启动</span></div>
       <div class="cl">npx petdex install desktop && npx petdex hooks install</div>
       <div class="cl">npx petdex desktop start</div>
     </div>
-    <p class="helper" style="margin-top:.75rem">在 Codex: <span class="mono">Settings → Appearance → Pets → 选择 my-cat</span> ✦</p>
   </div>
 </div>
 
-<footer>AI 像素艺术由 <a href="https://huggingface.co/nerijs/pixel-art-xl" target="_blank">nerijs/pixel-art-xl</a> 生成 · 灵感：<a href="https://petdex.crafter.run" target="_blank">Petdex</a></footer>
+<footer>AI 由 <a href="https://huggingface.co/nerijs/pixel-art-xl" target="_blank">nerijs/pixel-art-xl</a> 生成 · 灵感 <a href="https://petdex.crafter.run" target="_blank">Petdex</a></footer>
 </div>
 
 <script>
 (function(){
 'use strict';
 
-/* ── Constants ── */
 const FW=192,FH=208,COLS=8,ROWS=9;
 const SSW=FW*COLS,SSH=FH*ROWS;
-const HF_MODEL='https://api-inference.huggingface.co/models/nerijs/pixel-art-xl';
 
-// 9 animation states with prompts
+// Use the serverless inference API - correct CORS-enabled endpoint
+const HF_API = 'https://api-inference.huggingface.co/models/nerijs/pixel-art-xl';
+
 const STATES=[
-  {name:'idle',        lbl:'IDLE',    cls:'s-idle', prompt:'sitting, facing forward, calm idle pose'},
-  {name:'running-right',lbl:'RUN →',  cls:'s-run',  prompt:'running to the right, side view, legs in motion'},
-  {name:'running-left', lbl:'RUN ←',  cls:'s-run',  prompt:'running to the left, side view, legs in motion, mirrored'},
-  {name:'waving',      lbl:'WAVING',  cls:'s-wave', prompt:'sitting and waving one paw up cheerfully'},
-  {name:'jumping',     lbl:'JUMPING', cls:'s-wave', prompt:'jumping in the air, all paws off ground'},
-  {name:'failed',      lbl:'FAILED',  cls:'s-fail', prompt:'lying down, dizzy, swirly eyes, tired'},
-  {name:'waiting',     lbl:'WAITING', cls:'s-idle', prompt:'sitting patiently, looking up, tail wrapped around'},
-  {name:'running',     lbl:'RUN',     cls:'s-run',  prompt:'sprinting fast, dynamic pose, blur lines'},
-  {name:'review',      lbl:'REVIEW',  cls:'s-wave', prompt:'sitting upright, focused, looking at screen'},
+  {name:'idle',         lbl:'IDLE',    cls:'s-idle', emoji:'😴',
+   prompt:'cute cat sitting, facing forward, idle pose, pixel art game sprite, white background'},
+  {name:'running-right',lbl:'RUN →',   cls:'s-run',  emoji:'🏃',
+   prompt:'cute cat running to the right, side view, pixel art game sprite, white background'},
+  {name:'running-left', lbl:'RUN ←',   cls:'s-run',  emoji:'🏃',
+   prompt:'cute cat running to the left, mirrored side view, pixel art game sprite, white background'},
+  {name:'waving',       lbl:'WAVE',    cls:'s-wave', emoji:'👋',
+   prompt:'cute cat sitting and waving one paw, cheerful, pixel art game sprite, white background'},
+  {name:'jumping',      lbl:'JUMP',    cls:'s-wave', emoji:'⬆️',
+   prompt:'cute cat jumping in the air, all paws off ground, pixel art game sprite, white background'},
+  {name:'failed',       lbl:'FAIL',    cls:'s-fail', emoji:'😵',
+   prompt:'cute cat lying down dizzy, swirly eyes, tired, pixel art game sprite, white background'},
+  {name:'waiting',      lbl:'WAIT',    cls:'s-idle', emoji:'🪑',
+   prompt:'cute cat sitting patiently, looking up, tail curled, pixel art game sprite, white background'},
+  {name:'running',      lbl:'SPRINT',  cls:'s-run',  emoji:'💨',
+   prompt:'cute cat sprinting fast, dynamic pose, pixel art game sprite, white background'},
+  {name:'review',       lbl:'REVIEW',  cls:'s-wave', emoji:'🔍',
+   prompt:'cute cat sitting upright attentively, looking forward focused, pixel art game sprite, white background'},
 ];
 
 let hfToken='';
 let uploadedDataURL='';
-let catDescription='';
-let generatedImages=[]; // one base image per state row
-let spritesheetFrames=[]; // [row][frame] canvas
+let generatedBaseImages=[]; // URL per state
+let spritesheetFrames=[];
 let curRow=0,animF=0,animT=null,slug='my-cat';
 
-/* ── DOM ── */
-const tokenInput  = document.getElementById('tokenInput');
-const tokenSave   = document.getElementById('tokenSave');
-const tokenStatus = document.getElementById('tokenStatus');
-const upzone      = document.getElementById('upzone');
-const fileIn      = document.getElementById('fileInput');
-const photoImg    = document.getElementById('photoImg');
-const pixelImg    = document.getElementById('pixelImg');
-const genBtn      = document.getElementById('genBtn');
-const progwrap    = document.getElementById('progwrap');
-const progfill    = document.getElementById('progfill');
-const progtxt     = document.getElementById('progtxt');
-const stagesEl    = document.getElementById('stages');
-const ssCv        = document.getElementById('spritesheetCanvas');
-const ssCtx       = ssCv.getContext('2d');
-const petCv       = document.getElementById('petCanvas');
-const petCtx      = petCv.getContext('2d');
-const sbadge      = document.getElementById('sbadge');
-const dpet        = document.getElementById('dpet');
+// DOM
+const $=id=>document.getElementById(id);
+const tokenInput=$('tokenInput'), tokenSave=$('tokenSave'), tokenStatus=$('tokenStatus');
+const upzone=$('upzone'), fileIn=$('fileInput');
+const photoImg=$('photoImg'), pixelImg=$('pixelImg');
+const genBtn=$('genBtn'), progwrap=$('progwrap'), progfill=$('progfill'), progtxt=$('progtxt');
+const stagesEl=$('stages'), errbox=$('errbox');
+const ssCv=$('spritesheetCanvas'), ssCtx=ssCv.getContext('2d');
+const petCv=$('petCanvas'), petCtx=petCv.getContext('2d');
+const sbadge=$('sbadge'), dpet=$('dpet');
 
-/* ── Token ── */
-// Load saved token
-const saved = localStorage.getItem('hf_token');
-if(saved){hfToken=saved;tokenInput.value=saved;showTokenOk();}
+// ── Token ──
+(function(){
+  const saved=localStorage.getItem('hf_token')||'';
+  if(saved){hfToken=saved;tokenInput.value=saved;showTokOk();}
+})();
 
-tokenSave.addEventListener('click',()=>{
+tokenSave.addEventListener('click',saveToken);
+tokenInput.addEventListener('keydown',e=>{if(e.key==='Enter')saveToken();});
+
+function saveToken(){
   const t=tokenInput.value.trim();
-  if(!t.startsWith('hf_')){showTokenErr('Token 格式错误，应以 hf_ 开头');return;}
+  if(!t.startsWith('hf_')){showTokErr('格式错误，应以 hf_ 开头');return;}
   hfToken=t;
   localStorage.setItem('hf_token',t);
-  showTokenOk();
-  maybeEnableGen();
-});
-tokenInput.addEventListener('keydown',e=>{if(e.key==='Enter')tokenSave.click()});
-
-function showTokenOk(){
-  tokenStatus.className='token-status status-ok';
-  tokenStatus.textContent='✓ Token 已保存';
-  tokenStatus.style.display='inline-block';
+  showTokOk();
+  maybeEnable();
 }
-function showTokenErr(msg){
-  tokenStatus.className='token-status status-err';
-  tokenStatus.textContent='✗ '+msg;
-  tokenStatus.style.display='inline-block';
-}
+function showTokOk(){tokenStatus.className='token-status tok-ok';tokenStatus.textContent='✓ Token 已保存';tokenStatus.style.display='inline-block';}
+function showTokErr(m){tokenStatus.className='token-status tok-err';tokenStatus.textContent='✗ '+m;tokenStatus.style.display='inline-block';}
 
-/* ── Upload ── */
+// ── Upload ──
 upzone.addEventListener('dragover',e=>{e.preventDefault();upzone.classList.add('over')});
 upzone.addEventListener('dragleave',()=>upzone.classList.remove('over'));
-upzone.addEventListener('drop',e=>{e.preventDefault();upzone.classList.remove('over');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))load(f)});
-fileIn.addEventListener('change',e=>{if(e.target.files[0])load(e.target.files[0])});
+upzone.addEventListener('drop',e=>{e.preventDefault();upzone.classList.remove('over');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))loadFile(f)});
+fileIn.addEventListener('change',e=>{if(e.target.files[0])loadFile(e.target.files[0])});
 
-function load(f){
+function loadFile(f){
   slug=f.name.replace(/\.[^.]+$/,'').replace(/[^a-z0-9]/gi,'-').toLowerCase().replace(/-+/g,'-').replace(/^-|-$/g,'')||'my-cat';
   const r=new FileReader();
   r.onload=ev=>{
     uploadedDataURL=ev.target.result;
     photoImg.src=uploadedDataURL;
     photoImg.style.display='block';
-    document.querySelector('#photoBox .placeholder').style.display='none';
-    maybeEnableGen();
+    $('photoBox').style.fontSize='0';
+    maybeEnable();
   };
   r.readAsDataURL(f);
 }
+function maybeEnable(){genBtn.disabled=!(hfToken&&uploadedDataURL);}
 
-function maybeEnableGen(){
-  genBtn.disabled=!(hfToken&&uploadedDataURL);
-}
-
-/* ── HF API call ── */
-async function generatePixelArt(prompt, seed=42){
-  const fullPrompt=`pixel art, cute cat, ${prompt}, transparent background, game sprite, high quality pixel art, 32x32 pixels, clear outline, no background, isolated character`;
-  const negPrompt='photo, realistic, 3d, blurry, low quality, text, watermark, background, scenery';
-
-  const resp = await fetch(HF_MODEL,{
-    method:'POST',
-    headers:{
-      'Authorization':'Bearer '+hfToken,
-      'Content-Type':'application/json',
+// ── HF Inference API call with proper retry for model loading ──
+async function callHF(prompt, seed){
+  const body=JSON.stringify({
+    inputs: prompt,
+    parameters:{
+      negative_prompt:'photo, realistic, 3d render, blurry, background, scenery, text, watermark, multiple cats, cut off',
+      num_inference_steps:20,
+      guidance_scale:7,
+      width:512, height:512,
+      seed: seed||Math.floor(Math.random()*99999),
     },
-    body:JSON.stringify({
-      inputs: fullPrompt,
-      parameters:{
-        negative_prompt: negPrompt,
-        num_inference_steps: 25,
-        guidance_scale: 7.5,
-        width: 512,
-        height: 512,
-        seed: seed,
-      }
-    })
-  });
-
-  if(!resp.ok){
-    const err=await resp.json().catch(()=>({error:'Unknown error'}));
-    // Handle model loading
-    if(err.estimated_time){
-      throw {loading:true, wait:err.estimated_time};
+    options:{
+      wait_for_model: true,   // ← KEY: tells HF to wait instead of returning 503
+      use_cache: false,
     }
-    throw new Error(err.error||`HTTP ${resp.status}`);
-  }
-
-  const blob=await resp.blob();
-  return URL.createObjectURL(blob);
-}
-
-/* ── Load image from URL into canvas ── */
-function loadImg(url){
-  return new Promise((res,rej)=>{
-    const img=new Image();
-    img.crossOrigin='anonymous';
-    img.onload=()=>res(img);
-    img.onerror=rej;
-    img.src=url;
   });
+
+  // Try up to 4 times (model may still be loading despite wait_for_model)
+  for(let attempt=0;attempt<4;attempt++){
+    progtxt.textContent = attempt>0
+      ? `模型预热中，第 ${attempt+1} 次尝试...`
+      : progtxt.textContent;
+
+    let resp;
+    try{
+      resp = await fetch(HF_API,{
+        method:'POST',
+        headers:{
+          'Authorization':'Bearer '+hfToken,
+          'Content-Type':'application/json',
+        },
+        body,
+        signal: AbortSignal.timeout(120000), // 2 min timeout per attempt
+      });
+    }catch(fetchErr){
+      if(fetchErr.name==='TimeoutError'||fetchErr.name==='AbortError'){
+        if(attempt<3){await sleep(3000);continue;}
+        throw new Error('请求超时（2分钟）。请检查网络或稍后重试。');
+      }
+      throw new Error('网络错误：'+fetchErr.message);
+    }
+
+    // Handle 503 model loading
+    if(resp.status===503){
+      let j={};
+      try{j=await resp.json();}catch(e){}
+      const wait=Math.min((j.estimated_time||20),40)*1000;
+      progtxt.textContent=`模型冷启动，等待 ${Math.round(wait/1000)}s...`;
+      await sleep(wait);
+      continue;
+    }
+
+    // Handle auth error
+    if(resp.status===401||resp.status===403){
+      throw new Error('Token 无效或无权限，请重新设置 HF Token。');
+    }
+
+    // Handle rate limit
+    if(resp.status===429){
+      progtxt.textContent='请求过于频繁，等待 15s...';
+      await sleep(15000);
+      continue;
+    }
+
+    // Other errors
+    if(!resp.ok){
+      let msg=`HTTP ${resp.status}`;
+      try{const j=await resp.json();msg=j.error||msg;}catch(e){}
+      if(attempt<3){await sleep(5000);continue;}
+      throw new Error(msg);
+    }
+
+    // Success - return blob URL
+    const blob=await resp.blob();
+    if(blob.size<500){
+      // Suspiciously small - might be an error disguised as 200
+      if(attempt<3){await sleep(3000);continue;}
+      throw new Error('返回图片过小，可能生成失败');
+    }
+    return URL.createObjectURL(blob);
+  }
+  throw new Error('多次重试后仍然失败');
 }
 
-/* ── Build sprite frame from a generated image ──
-   Takes the base image, applies per-frame transforms
-   (bob, flip, leg offset etc.) to make animation frames */
-function buildFrame(baseImg, stateIdx, frameIdx){
-  const cv=document.createElement('canvas');
-  cv.width=FW;cv.height=FH;
+// ── Build animation frame from base image ──
+function buildFrame(baseImg,stateIdx,frameIdx){
+  const cv=document.createElement('canvas');cv.width=FW;cv.height=FH;
   const ctx=cv.getContext('2d');
+  const t=frameIdx/COLS, PI=Math.PI;
+  const scale=0.78;
+  const dw=Math.round(FW*scale), dh=Math.round(FH*scale);
+  const dx=Math.round((FW-dw)/2), dy=Math.round((FH-dh)*0.55);
 
-  const COLS=8;
-  const t=frameIdx/COLS;
-  const PI=Math.PI;
-
-  // Scale the generated image to fill most of the frame
-  const scale=0.75;
-  const dw=Math.round(FW*scale);
-  const dh=Math.round(FH*scale);
-  const dx=Math.round((FW-dw)/2);
-  const dy=Math.round((FH-dh)/2)+8; // slight offset down
-
-  // Per-state animation transforms
-  let bobY=0, flip=false, scaleX=1, scaleY=1, alpha=1;
-
+  let bobY=0,flip=false,scaleX=1,scaleY=1,alpha=1,rotDeg=0;
   switch(stateIdx){
-    case 0: // idle
-      bobY=Math.round(Math.sin(t*PI*2)*3);
-      // blink: darken eyes slightly on frame 5
-      if(frameIdx===5)alpha=0.92;
-      break;
-    case 1: // run right
-      bobY=frameIdx%2===0?-2:1;
-      // slight lean forward
-      scaleX=frameIdx%2===0?1.05:0.97;
-      break;
-    case 2: // run left
-      flip=true;
-      bobY=frameIdx%2===0?-2:1;
-      scaleX=frameIdx%2===0?1.05:0.97;
-      break;
-    case 3: // waving
-      bobY=Math.round(Math.sin(t*PI*2)*4);
-      break;
-    case 4: // jumping
-      bobY=-Math.round(Math.abs(Math.sin(t*PI))*12);
-      scaleY=1+Math.sin(t*PI)*0.08;
-      scaleX=1-Math.sin(t*PI)*0.04;
-      break;
-    case 5: // failed
-      bobY=2;
-      alpha=0.7+Math.sin(t*PI*4)*0.15;
-      scaleY=0.9;
-      break;
-    case 6: // waiting
-      bobY=Math.round(Math.sin(t*PI)*2);
-      break;
-    case 7: // running fast
-      bobY=frameIdx%2===0?-3:1;
-      scaleX=frameIdx%2===0?1.08:0.94;
-      break;
-    case 8: // review
-      bobY=Math.round(Math.sin(t*PI*2)*2);
-      break;
+    case 0: bobY=Math.round(Math.sin(t*PI*2)*3);break;
+    case 1: bobY=frameIdx%2===0?-3:1;scaleX=frameIdx%2===0?1.06:0.96;break;
+    case 2: flip=true;bobY=frameIdx%2===0?-3:1;scaleX=frameIdx%2===0?1.06:0.96;break;
+    case 3: bobY=Math.round(Math.sin(t*PI*2)*4);break;
+    case 4: bobY=-Math.round(Math.abs(Math.sin(t*PI))*14);scaleY=1+Math.sin(t*PI)*0.1;scaleX=1-Math.sin(t*PI)*0.05;break;
+    case 5: bobY=3;alpha=0.65+Math.abs(Math.sin(t*PI*3))*0.25;scaleY=0.88;break;
+    case 6: bobY=Math.round(Math.sin(t*PI)*2);break;
+    case 7: bobY=frameIdx%2===0?-4:1;scaleX=frameIdx%2===0?1.1:0.92;break;
+    case 8: bobY=Math.round(Math.sin(t*PI*2)*2);break;
   }
 
   ctx.save();
-  if(flip){
-    ctx.translate(FW,0);
-    ctx.scale(-1,1);
-  }
+  if(flip){ctx.translate(FW,0);ctx.scale(-1,1);}
   ctx.globalAlpha=alpha;
-
-  const finalDx=flip?FW-dx-dw:dx;
-  const finalDy=dy+bobY;
-  const finalDw=Math.round(dw*scaleX);
-  const finalDh=Math.round(dh*scaleY);
-  const adjDx=finalDx+Math.round((dw-finalDw)/2);
-
-  ctx.drawImage(baseImg,adjDx,finalDy,finalDw,finalDh);
+  const adjX=(flip?FW-dx-dw:dx)+Math.round((dw-dw*scaleX)/2);
+  const adjW=Math.round(dw*scaleX), adjH=Math.round(dh*scaleY);
+  ctx.drawImage(baseImg,adjX,dy+bobY,adjW,adjH);
   ctx.restore();
-
-  // Ground shadow
-  ctx.globalAlpha=0.2;
+  // shadow
+  ctx.globalAlpha=0.18;
   ctx.fillStyle='#000';
   ctx.beginPath();
-  ctx.ellipse(FW/2,(dy+dh+bobY+6),dw*0.35,5,0,0,Math.PI*2);
+  ctx.ellipse(FW/2,dy+dh+bobY+4,dw*0.32,4,0,0,PI*2);
   ctx.fill();
   ctx.globalAlpha=1;
-
   return cv;
 }
 
-/* ── Build stage cards UI ── */
+// ── Build stage UI ──
 function buildStageCards(){
   stagesEl.innerHTML='';
   STATES.forEach((s,i)=>{
-    const card=document.createElement('div');
-    card.className='stage-card';card.id='stage-'+i;
-    card.innerHTML=`
-      <div class="stage-img" id="stage-img-${i}">
-        <span class="wait">⏳</span>
-        <span class="spin" style="display:none">⚙️</span>
-        <img id="stage-imgel-${i}" alt="${s.lbl}">
-      </div>
-      <div class="stage-lbl">${s.lbl}</div>`;
-    stagesEl.appendChild(card);
+    const d=document.createElement('div');
+    d.className='sc';d.id='sc'+i;
+    d.innerHTML=`<div class="sc-img" id="sci${i}">${s.emoji}<img id="simg${i}" alt="${s.lbl}"></div><div class="sc-lbl">${s.lbl}</div>`;
+    stagesEl.appendChild(d);
   });
 }
 
-/* ── Main generation ── */
+// ── Main generate ──
 genBtn.addEventListener('click',async()=>{
-  if(!hfToken){showTokenErr('请先输入 HF Token');return;}
-  if(!uploadedDataURL){return;}
-
+  errbox.style.display='none';
   genBtn.disabled=true;
   progwrap.style.display='block';
   ssCv.width=SSW;ssCv.height=SSH;
   ssCtx.clearRect(0,0,SSW,SSH);
-  spritesheetFrames=[];
-  generatedImages=[];
-
+  spritesheetFrames=[];generatedBaseImages=[];
   buildStageCards();
-
-  const total=ROWS;
-  let done=0;
 
   for(let row=0;row<ROWS;row++){
     const state=STATES[row];
-    const card=document.getElementById('stage-'+row);
-    const imgEl=document.getElementById('stage-imgel-'+row);
-    const waitEl=card.querySelector('.wait');
-    const spinEl=card.querySelector('.spin');
+    const card=$('sc'+row);
+    const imgEl=$('simg'+row);
+    const imgBox=$('sci'+row);
 
-    // Mark as loading
-    card.className='stage-card loading';
-    waitEl.style.display='none';
-    spinEl.style.display='block';
-    progfill.style.width=((row/total)*85+2)+'%';
-    progtxt.textContent=`✦ AI 生成 ${state.lbl} 动画... (${row+1}/${total})`;
+    card.className='sc loading';
+    imgBox.style.fontSize='0'; // hide emoji while loading
+    progfill.style.width=((row/ROWS)*88+2)+'%';
+    progtxt.textContent=`✦ 生成 ${state.lbl}... (${row+1}/${ROWS})`;
 
-    let imageUrl=null;
-    let retries=0;
-
-    while(retries<3){
-      try{
-        imageUrl=await generatePixelArt(state.prompt, 1000+row*7);
-        break;
-      }catch(e){
-        if(e&&e.loading){
-          progtxt.textContent=`模型加载中，等待 ${Math.round(e.wait||20)}s... (${state.lbl})`;
-          await sleep(Math.min((e.wait||20)*1000,30000));
-          retries++;
-        } else {
-          progtxt.textContent=`生成 ${state.lbl} 失败：${e.message}`;
-          await sleep(3000);
-          retries++;
-        }
-      }
+    let url=null;
+    try{
+      // Build a cat-specific prompt
+      const catDesc='grey and white bicolour cat, round face, amber eyes, chubby body, British Shorthair';
+      const fullPrompt=`pixel art, ${catDesc}, ${state.prompt}, 32x32 sprite sheet style, clean pixel art, cute, game character, isolated on white, no background`;
+      url=await callHF(fullPrompt, 1000+row*13);
+    }catch(err){
+      card.className='sc err';
+      imgBox.style.fontSize='1.1rem';
+      imgBox.textContent='❌';
+      // Show error but keep going with fallback
+      const msg=`${state.lbl} 生成失败：${err.message}`;
+      errbox.textContent=msg;errbox.style.display='block';
+      // Use first successful image as fallback
+      url=generatedBaseImages.find(Boolean)||null;
     }
 
-    if(!imageUrl){
-      // Fallback: reuse previous image if available
-      imageUrl=generatedImages[0]||null;
+    generatedBaseImages.push(url);
+
+    if(url){
+      imgEl.src=url;imgEl.style.display='block';
+      imgBox.textContent='';
+      card.className='sc done';
     }
 
-    generatedImages.push(imageUrl);
-
-    // Show in stage card
-    if(imageUrl){
-      imgEl.src=imageUrl;
-      imgEl.style.display='block';
-      spinEl.style.display='none';
-      card.className='stage-card done';
+    // Show pixel preview on first success
+    if(row===0&&url){
+      pixelImg.src=url;pixelImg.style.display='block';
+      $('pixelBox').style.fontSize='0';
     }
 
-    // Build 8 animation frames for this row
+    // Build 8 animation frames
     const rowFrames=[];
-    if(imageUrl){
+    if(url){
       try{
-        const baseImg=await loadImg(imageUrl);
+        const img=await loadImg(url);
         for(let f=0;f<COLS;f++){
-          const frameCv=buildFrame(baseImg,row,f);
-          ssCtx.drawImage(frameCv,f*FW,row*FH);
-          rowFrames.push(frameCv);
+          const fc=buildFrame(img,row,f);
+          ssCtx.drawImage(fc,f*FW,row*FH);
+          rowFrames.push(fc);
         }
-      }catch(err){
-        console.warn('Frame build error',err);
-        // empty frames
-        for(let f=0;f<COLS;f++){
-          const ec=document.createElement('canvas');ec.width=FW;ec.height=FH;
-          rowFrames.push(ec);
-        }
+      }catch(e){
+        for(let f=0;f<COLS;f++)rowFrames.push(blankCanvas());
       }
     } else {
-      for(let f=0;f<COLS;f++){
-        const ec=document.createElement('canvas');ec.width=FW;ec.height=FH;
-        rowFrames.push(ec);
-      }
+      for(let f=0;f<COLS;f++)rowFrames.push(blankCanvas());
     }
     spritesheetFrames.push(rowFrames);
-
-    done++;
-    // Show first generated image as pixel preview
-    if(row===0&&imageUrl){
-      pixelImg.src=imageUrl;
-      pixelImg.style.display='block';
-      document.querySelector('#pixelBox .placeholder').style.display='none';
-    }
   }
 
   progfill.style.width='100%';
-  progtxt.textContent='✦ 全部生成完成！';
+  progtxt.textContent='✦ 生成完成！';
 
-  // Show sections
-  document.getElementById('spriteSection').style.display='block';
-  document.getElementById('desktopSection').style.display='block';
-  document.getElementById('dlrow').style.display='block';
-  document.getElementById('guide').style.display='block';
-  document.getElementById('dlSS').disabled=false;
-  document.getElementById('dlJSON').disabled=false;
+  $('spriteSection').style.display='block';
+  $('desktopSection').style.display='block';
+  $('dlrow').style.display='block';
+  $('guide').style.display='block';
+  $('dlSS').disabled=false;
+  $('dlJSON').disabled=false;
 
   const dw=Math.min(SSW*0.2,300);
-  ssCv.style.width=dw+'px';
-  ssCv.style.height=(dw/SSW*SSH)+'px';
+  ssCv.style.width=dw+'px';ssCv.style.height=(dw/SSW*SSH)+'px';
 
   genBtn.disabled=false;
   startAnim(0);
-  document.getElementById('desktopSection').scrollIntoView({behavior:'smooth',block:'start'});
+  $('desktopSection').scrollIntoView({behavior:'smooth',block:'start'});
 });
 
+function blankCanvas(){const c=document.createElement('canvas');c.width=FW;c.height=FH;return c;}
+function loadImg(url){return new Promise((res,rej)=>{const i=new Image();i.crossOrigin='anonymous';i.onload=()=>res(i);i.onerror=()=>rej(new Error('图片加载失败'));i.src=url;});}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
-/* ── Animation ── */
+// ── Anim loop ──
 function startAnim(row){
   clearInterval(animT);curRow=row;animF=0;
   animT=setInterval(()=>{
@@ -653,30 +559,28 @@ function startAnim(row){
     animF=(animF+1)%COLS;
   },150);
 }
-
 document.querySelectorAll('.abtn').forEach(b=>{
   b.addEventListener('click',()=>{
     document.querySelectorAll('.abtn').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
-    sbadge.textContent=b.dataset.lbl;
-    sbadge.className='sbadge '+b.dataset.cls;
+    sbadge.textContent=b.dataset.lbl;sbadge.className='sbadge '+b.dataset.cls;
     startAnim(parseInt(b.dataset.row));
   });
 });
 
-/* ── Drag ── */
+// ── Drag ──
 let dragging=false,dox=0,doy=0;
 dpet.addEventListener('mousedown',e=>{dragging=true;const r=dpet.getBoundingClientRect();dox=e.clientX-r.left;doy=e.clientY-r.top;dpet.style.animation='none';e.preventDefault()});
-document.addEventListener('mousemove',e=>{if(!dragging)return;const pr=document.getElementById('deskprev').getBoundingClientRect();let nx=e.clientX-pr.left-dox,ny=e.clientY-pr.top-doy;nx=Math.max(0,Math.min(pr.width-128,nx));ny=Math.max(0,Math.min(pr.height-128-36,ny));dpet.style.right='auto';dpet.style.bottom='auto';dpet.style.left=nx+'px';dpet.style.top=ny+'px'});
+document.addEventListener('mousemove',e=>{if(!dragging)return;const pr=$('deskprev').getBoundingClientRect();let nx=e.clientX-pr.left-dox,ny=e.clientY-pr.top-doy;nx=Math.max(0,Math.min(pr.width-128,nx));ny=Math.max(0,Math.min(pr.height-128-36,ny));dpet.style.right='auto';dpet.style.bottom='auto';dpet.style.left=nx+'px';dpet.style.top=ny+'px'});
 document.addEventListener('mouseup',()=>{if(dragging){dragging=false;dpet.style.animation=''}});
 
-/* ── Downloads ── */
-document.getElementById('dlSS').addEventListener('click',()=>{ssCv.toBlob(b=>{dl(URL.createObjectURL(b),'spritesheet.webp')},'image/webp',0.95)});
-document.getElementById('dlJSON').addEventListener('click',()=>{
-  const meta={id:slug,displayName:slug.split('-').map(w=>w[0].toUpperCase()+w.slice(1)).join(' '),description:`${slug} — AI-generated pixel art cat companion.`,spritesheetPath:'spritesheet.webp',states:STATES.map((s,i)=>({name:s.name,row:i,frames:COLS,duration:150}))};
+// ── Downloads ──
+$('dlSS').addEventListener('click',()=>{ssCv.toBlob(b=>{dl(URL.createObjectURL(b),'spritesheet.webp')},'image/webp',0.95)});
+$('dlJSON').addEventListener('click',()=>{
+  const meta={id:slug,displayName:slug.split('-').map(w=>w[0].toUpperCase()+w.slice(1)).join(' '),description:`${slug} — AI pixel art cat.`,spritesheetPath:'spritesheet.webp',states:STATES.map((s,i)=>({name:s.name,row:i,frames:COLS,duration:150}))};
   dl(URL.createObjectURL(new Blob([JSON.stringify(meta,null,2)],{type:'application/json'})),'pet.json');
 });
-function dl(url,name){const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(()=>URL.revokeObjectURL(url),5000)}
+function dl(url,name){const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(()=>URL.revokeObjectURL(url),5000);}
 
 })();
 </script>
