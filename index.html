@@ -3,1096 +3,693 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🐱 Cat.Pet Maker — 把你的猫变成桌面像素伙伴</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<title>🐱 Cat.Pet Maker</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --bg: #0a0a12;
-  --surface: #0e0a1c;
-  --surface2: #110d1f;
-  --border: #2a1e4a;
-  --border2: #3a2860;
-  --pink: #ff8bdb;
-  --purple: #9980c0;
-  --muted: #6a5a8a;
-  --dim: #3a2860;
-  --text: #e8e0f0;
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a12;--surface:#0e0a1c;--surface2:#110d1f;
+  --border:#2a1e4a;--border2:#3a2860;
+  --pink:#ff8bdb;--purple:#9980c0;--muted:#6a5a8a;--dim:#3a2860;--text:#e8e0f0
 }
-
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Noto Sans SC', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-.scanlines {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.025) 2px, rgba(0,0,0,0.025) 4px);
-  pointer-events: none; z-index: 0;
-}
-
-.container {
-  max-width: 820px;
-  margin: 0 auto;
-  padding: 2.5rem 1.5rem 4rem;
-  position: relative; z-index: 1;
-}
-
-/* ── Header ── */
-.header { text-align: center; margin-bottom: 3rem; }
-
-.logo {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 1.25rem;
-  color: var(--pink);
-  letter-spacing: 0.05em;
-  text-shadow: 0 0 30px rgba(255,139,219,0.4);
-  margin-bottom: 0.75rem;
-  display: block;
-}
-
-.tagline {
-  color: var(--purple);
-  font-size: 0.9rem;
-  font-weight: 300;
-  margin-bottom: 1.25rem;
-}
-
-.badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-
-.badge {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.38rem;
-  padding: 5px 10px;
-  border: 1px solid var(--border2);
-  border-radius: 3px;
-  color: var(--muted);
-  background: var(--surface);
-}
-
-/* ── Upload ── */
-.upload-zone {
-  background: var(--surface2);
-  border: 2px dashed var(--border2);
-  border-radius: 12px;
-  padding: 3rem 2rem;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.25s;
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 1.5rem;
-}
-
-.upload-zone::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: radial-gradient(ellipse at center, rgba(255,139,219,0.04) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.upload-zone:hover,
-.upload-zone.dragover {
-  border-color: var(--pink);
-  background: #170e2a;
-  box-shadow: 0 0 40px rgba(255,139,219,0.08), inset 0 0 40px rgba(255,139,219,0.03);
-}
-
-.upload-zone input[type="file"] {
-  position: absolute; inset: 0;
-  opacity: 0; cursor: pointer;
-  width: 100%; height: 100%;
-  font-size: 0; /* hide any browser UI */
-}
-
-.upload-icon-wrap {
-  width: 72px; height: 72px;
-  margin: 0 auto 1.25rem;
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2rem;
-  transition: transform 0.2s;
-}
-
-.upload-zone:hover .upload-icon-wrap { transform: scale(1.08); }
-
-.upload-title {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.6rem;
-  color: var(--pink);
-  margin-bottom: 0.6rem;
-  line-height: 1.8;
-}
-
-.upload-desc {
-  font-size: 0.8rem;
-  color: var(--muted);
-  line-height: 1.6;
-}
-
-.upload-desc strong { color: var(--purple); font-weight: 400; }
-
-/* ── Preview Grid ── */
-.preview-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-}
-
-@media (max-width: 500px) { .preview-grid { grid-template-columns: 1fr; } }
-
-.panel {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 1rem;
-}
-
-.panel-title {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.42rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  margin-bottom: 0.75rem;
-}
-
-.photo-placeholder {
-  width: 100%; aspect-ratio: 1;
-  background: #160e28;
-  border: 1px dashed var(--border);
-  border-radius: 6px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 3rem; color: var(--dim);
-}
-
-.photo-preview {
-  width: 100%; aspect-ratio: 1;
-  object-fit: cover;
-  border-radius: 6px;
-  display: none;
-}
-
-.pixel-canvas-wrap {
-  width: 100%; aspect-ratio: 1;
-  background: #160e28;
-  border-radius: 6px;
-  display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
-}
-
-.pixel-placeholder {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.42rem;
-  color: var(--dim);
-  text-align: center;
-  line-height: 2.2;
-}
-
-#pixelCanvas {
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-  width: 128px; height: 128px;
-  display: none;
-}
-
-/* ── Generate Button ── */
-.btn-generate {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.6rem;
-  padding: 1rem 2rem;
-  width: 100%;
-  border: 2px solid var(--pink);
-  border-radius: 6px;
-  background: #1a0830;
-  color: var(--pink);
-  cursor: pointer;
-  transition: all 0.15s;
-  letter-spacing: 0.08em;
-  box-shadow: 0 4px 0 #6b1a5a, 0 0 0 0 rgba(255,139,219,0);
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-generate::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: var(--pink);
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.btn-generate:hover:not(:disabled) {
-  background: #250c42;
-  box-shadow: 0 6px 0 #6b1a5a, 0 0 20px rgba(255,139,219,0.2);
-  transform: translateY(-2px);
-}
-
-.btn-generate:hover:not(:disabled)::after { opacity: 0.05; }
-
-.btn-generate:active:not(:disabled) {
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 #6b1a5a;
-}
-
-.btn-generate:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-/* ── Progress ── */
-.progress-wrap { margin-top: 1rem; display: none; }
-
-.progress-bar {
-  width: 100%; height: 6px;
-  background: #1e1535;
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--pink), #a855f7, var(--pink));
-  background-size: 200% 100%;
-  border-radius: 3px;
-  width: 0%;
-  transition: width 0.4s ease;
-  animation: shimmer 1.5s linear infinite;
-}
-
-@keyframes shimmer { to { background-position: -200% 0; } }
-
-.progress-text {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.42rem;
-  color: var(--purple);
-  margin-top: 0.6rem;
-  min-height: 1.4em;
-}
-
-/* ── Divider ── */
-hr.divider {
-  border: none;
-  border-top: 1px solid #1e1535;
-  margin: 2rem 0;
-}
-
-/* ── Spritesheet ── */
-#spriteSection { display: none; }
-
-.spritesheet-scroll {
-  background: #07040f;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.75rem;
-  overflow-x: auto;
-  margin-top: 0.75rem;
-}
-
-#spritesheetCanvas {
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-  display: block;
-  margin: 0 auto;
-  max-width: 100%;
-  height: auto;
-}
-
-.helper {
-  font-size: 0.72rem;
-  color: var(--muted);
-  line-height: 1.7;
-  margin-top: 0.6rem;
-}
-
-.mono {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.55em;
-  color: var(--purple);
-  background: var(--surface2);
-  padding: 2px 6px;
-  border-radius: 3px;
-}
-
-/* ── Desktop Preview ── */
-#desktopSection { display: none; margin-top: 1rem; }
-
-.desktop-preview {
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-  position: relative;
-  height: 220px;
-  background: linear-gradient(135deg, #0d0820 0%, #1a0d30 50%, #0a1028 100%);
-}
-
-.desktop-icons {
-  position: absolute; top: 12px; left: 12px;
-  display: flex; flex-direction: column; gap: 8px;
-}
-
-.desktop-icon {
-  width: 36px; height: 36px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 6px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1rem;
-}
-
-.status-badge {
-  position: absolute; top: 10px; right: 10px;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.35rem;
-  padding: 4px 8px;
-  border-radius: 3px;
-  z-index: 4;
-  transition: all 0.3s;
-}
-
-.s-idle   { background: rgba(74,222,128,0.1); color: #4ade80; border: 1px solid #4ade80; }
-.s-run    { background: rgba(251,146,60,0.1);  color: #fb923c; border: 1px solid #fb923c; }
-.s-wave   { background: rgba(96,165,250,0.1);  color: #60a5fa; border: 1px solid #60a5fa; }
-.s-fail   { background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid #f87171; }
-
-.desktop-pet {
-  position: absolute;
-  bottom: 44px; right: 24px;
-  cursor: grab; user-select: none;
-  z-index: 3;
-  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
-  animation: petFloat 2.5s ease-in-out infinite;
-  transition: filter 0.2s;
-}
-
-.desktop-pet:hover { filter: drop-shadow(0 4px 14px rgba(255,139,219,0.5)); }
-.desktop-pet:active { cursor: grabbing; }
-
-@keyframes petFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-7px); }
-}
-
-#petSpriteCanvas {
-  width: 80px; height: 80px;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-  display: block;
-}
-
-.taskbar {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  height: 36px;
-  background: rgba(8,4,16,0.92);
-  backdrop-filter: blur(8px);
-  border-top: 1px solid var(--border);
-  display: flex; align-items: center;
-  padding: 0 1rem; gap: 8px;
-  z-index: 2;
-}
-
-.tb-dot { width: 8px; height: 8px; border-radius: 50%; }
-
-.tb-text {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.38rem;
-  color: var(--dim);
-  margin-left: 6px;
-}
-
-.anim-controls {
-  display: flex; gap: 6px; flex-wrap: wrap;
-  margin-top: 0.75rem;
-}
-
-.anim-btn {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.42rem;
-  padding: 0.45rem 0.85rem;
-  border: 1px solid var(--border2);
-  border-radius: 4px;
-  background: var(--surface);
-  color: var(--muted);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.anim-btn:hover, .anim-btn.active {
-  border-color: var(--pink);
-  color: var(--pink);
-  background: #1e0f35;
-}
-
-/* ── Download ── */
-#downloadRow { display: none; margin-top: 1.25rem; }
-
-.dl-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
-}
-
-@media (max-width: 420px) { .dl-grid { grid-template-columns: 1fr; } }
-
-.dl-btn {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.45rem;
-  padding: 0.9rem 1rem;
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  background: var(--surface);
-  color: var(--purple);
-  cursor: pointer;
-  transition: all 0.15s;
-  text-align: center;
-  box-shadow: 3px 3px 0 var(--bg);
-  line-height: 1.8;
-}
-
-.dl-btn span { color: var(--dim); font-size: 0.85em; }
-
-.dl-btn:hover:not(:disabled) {
-  border-color: var(--pink);
-  color: var(--pink);
-  background: #1a0f2e;
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0 var(--bg);
-}
-
-.dl-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-
-/* ── Install Guide ── */
-#installGuide { display: none; margin-top: 1.25rem; }
-
-.code-block {
-  background: #07040f;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 1rem 1.25rem;
-  margin-top: 0.75rem;
-  overflow-x: auto;
-}
-
-.code-line {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.42rem;
-  line-height: 2.6;
-  white-space: nowrap;
-}
-
-.c-comment { color: #3a8a5a; }
-.c-cmd { color: var(--text); }
-.c-arg { color: var(--pink); }
-
-/* ── Steps ── */
-.steps-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.75rem;
-  margin-top: 2rem;
-}
-
-@media (max-width: 500px) { .steps-grid { grid-template-columns: 1fr; } }
-
-.step-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 1rem;
-  text-align: center;
-}
-
-.step-num {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 1rem;
-  color: var(--dim);
-  margin-bottom: 0.5rem;
-}
-
-.step-title { font-size: 0.82rem; color: #c8b8e0; font-weight: 500; margin-bottom: 0.35rem; }
-.step-desc { font-size: 0.68rem; color: var(--muted); line-height: 1.6; }
-
-/* ── Footer ── */
-footer {
-  margin-top: 3rem;
-  text-align: center;
-  font-size: 0.7rem;
-  color: var(--dim);
-  line-height: 2;
-}
-
-footer a { color: var(--muted); text-decoration: none; }
-footer a:hover { color: var(--pink); }
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans SC',sans-serif;min-height:100vh}
+.scan{position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.025) 2px,rgba(0,0,0,.025) 4px);pointer-events:none;z-index:0}
+.wrap{max-width:860px;margin:0 auto;padding:2.5rem 1.5rem 4rem;position:relative;z-index:1}
+.hdr{text-align:center;margin-bottom:2.5rem}
+.logo{font-family:'Press Start 2P',monospace;font-size:1.1rem;color:var(--pink);text-shadow:0 0 30px rgba(255,139,219,.4);display:block;margin-bottom:.6rem}
+.sub{color:var(--purple);font-size:.85rem;font-weight:300;margin-bottom:1rem}
+.badges{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.badge{font-family:'Press Start 2P',monospace;font-size:.35rem;padding:4px 9px;border:1px solid var(--border2);border-radius:3px;color:var(--muted);background:var(--surface)}
+.upzone{background:var(--surface2);border:2px dashed var(--border2);border-radius:12px;padding:2.5rem;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;margin-bottom:1.5rem}
+.upzone:hover,.upzone.over{border-color:var(--pink);background:#170e2a;box-shadow:0 0 40px rgba(255,139,219,.08)}
+.upzone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.up-icon{width:64px;height:64px;margin:0 auto 1rem;background:var(--surface);border:1px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;transition:transform .2s}
+.upzone:hover .up-icon{transform:scale(1.08)}
+.up-title{font-family:'Press Start 2P',monospace;font-size:.55rem;color:var(--pink);margin-bottom:.5rem}
+.up-desc{font-size:.8rem;color:var(--muted);line-height:1.6}
+.up-desc strong{color:var(--purple);font-weight:400}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem}
+@media(max-width:500px){.pgrid{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem}
+.ptitle{font-family:'Press Start 2P',monospace;font-size:.4rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem}
+.ph{width:100%;aspect-ratio:1;background:#160e28;border:1px dashed var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:var(--dim)}
+#photoPreview{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;display:none}
+.pcwrap{width:100%;aspect-ratio:1;background:#07040f;border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+#pixelCanvas{image-rendering:pixelated;image-rendering:crisp-edges;display:none}
+.pphold{font-family:'Press Start 2P',monospace;font-size:.4rem;color:var(--dim);text-align:center;line-height:2.2}
+.genbtn{font-family:'Press Start 2P',monospace;font-size:.55rem;padding:.9rem 2rem;width:100%;border:2px solid var(--pink);border-radius:6px;background:#1a0830;color:var(--pink);cursor:pointer;transition:all .15s;letter-spacing:.06em;box-shadow:0 4px 0 #6b1a5a;margin-bottom:1rem}
+.genbtn:hover:not(:disabled){background:#250c42;box-shadow:0 6px 0 #6b1a5a;transform:translateY(-2px)}
+.genbtn:active:not(:disabled){transform:translateY(2px);box-shadow:0 2px 0 #6b1a5a}
+.genbtn:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+.progwrap{display:none;margin-bottom:1rem}
+.progbar{width:100%;height:6px;background:#1e1535;border-radius:3px;overflow:hidden}
+.progfill{height:100%;background:linear-gradient(90deg,var(--pink),#a855f7,var(--pink));background-size:200% 100%;border-radius:3px;width:0%;transition:width .3s ease;animation:shimmer 1.5s linear infinite}
+@keyframes shimmer{to{background-position:-200% 0}}
+.progtxt{font-family:'Press Start 2P',monospace;font-size:.38rem;color:var(--purple);margin-top:.5rem;min-height:1.4em}
+hr.div{border:none;border-top:1px solid #1e1535;margin:1.5rem 0}
+#spriteSection{display:none}
+.ss-scroll{background:#07040f;border:1px solid var(--border);border-radius:8px;padding:.75rem;overflow-x:auto;margin-top:.75rem}
+#spritesheetCanvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block;margin:0 auto}
+.helper{font-size:.7rem;color:var(--muted);line-height:1.7;margin-top:.6rem}
+.mono{font-family:'Press Start 2P',monospace;font-size:.5em;color:var(--purple);background:var(--surface2);padding:2px 6px;border-radius:3px}
+#desktopSection{display:none;margin-top:1rem}
+.deskprev{border:1px solid var(--border);border-radius:10px;overflow:hidden;position:relative;height:240px;background:linear-gradient(135deg,#0d0820 0%,#1a0d30 50%,#0a1028 100%)}
+.deskicons{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:8px}
+.deskicon{width:36px;height:36px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.sbadge{position:absolute;top:10px;right:10px;font-family:'Press Start 2P',monospace;font-size:.32rem;padding:4px 8px;border-radius:3px;z-index:4;transition:all .3s}
+.s-idle{background:rgba(74,222,128,.1);color:#4ade80;border:1px solid #4ade80}
+.s-run{background:rgba(251,146,60,.1);color:#fb923c;border:1px solid #fb923c}
+.s-wave{background:rgba(96,165,250,.1);color:#60a5fa;border:1px solid #60a5fa}
+.s-fail{background:rgba(248,113,113,.1);color:#f87171;border:1px solid #f87171}
+.dpet{position:absolute;bottom:48px;right:24px;cursor:grab;user-select:none;z-index:3;filter:drop-shadow(0 4px 10px rgba(0,0,0,.5));animation:pfloat 2.5s ease-in-out infinite;transition:filter .2s}
+.dpet:hover{filter:drop-shadow(0 4px 14px rgba(255,139,219,.5))}
+.dpet:active{cursor:grabbing}
+@keyframes pfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+#petCanvas{width:96px;height:96px;image-rendering:pixelated;image-rendering:crisp-edges;display:block}
+.taskbar{position:absolute;bottom:0;left:0;right:0;height:36px;background:rgba(8,4,16,.92);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 1rem;gap:8px;z-index:2}
+.tbdot{width:8px;height:8px;border-radius:50%}
+.tbtxt{font-family:'Press Start 2P',monospace;font-size:.35rem;color:var(--dim);margin-left:6px}
+.actrl{display:flex;gap:6px;flex-wrap:wrap;margin-top:.75rem}
+.abtn{font-family:'Press Start 2P',monospace;font-size:.4rem;padding:.42rem .8rem;border:1px solid var(--border2);border-radius:4px;background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s}
+.abtn:hover,.abtn.active{border-color:var(--pink);color:var(--pink);background:#1e0f35}
+#dlrow{display:none;margin-top:1.25rem}
+.dlgrid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:420px){.dlgrid{grid-template-columns:1fr}}
+.dlbtn{font-family:'Press Start 2P',monospace;font-size:.42rem;padding:.85rem 1rem;border:1px solid var(--border2);border-radius:8px;background:var(--surface);color:var(--purple);cursor:pointer;transition:all .15s;text-align:center;box-shadow:3px 3px 0 var(--bg);line-height:1.8}
+.dlbtn span{color:var(--dim);font-size:.85em}
+.dlbtn:hover:not(:disabled){border-color:var(--pink);color:var(--pink);background:#1a0f2e;transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--bg)}
+.dlbtn:disabled{opacity:.3;cursor:not-allowed}
+#guide{display:none;margin-top:1.25rem}
+.codeblock{background:#07040f;border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;margin-top:.75rem;overflow-x:auto}
+.cl{font-family:'Press Start 2P',monospace;font-size:.4rem;line-height:2.6;white-space:nowrap}
+.cc{color:#3a8a5a}.ca{color:var(--pink)}
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-top:2rem}
+@media(max-width:500px){.sgrid{grid-template-columns:1fr}}
+.scard{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center}
+.snum{font-family:'Press Start 2P',monospace;font-size:.9rem;color:var(--dim);margin-bottom:.5rem}
+.stitle{font-size:.82rem;color:#c8b8e0;font-weight:500;margin-bottom:.35rem}
+.sdesc{font-size:.68rem;color:var(--muted);line-height:1.6}
+footer{margin-top:3rem;text-align:center;font-size:.7rem;color:var(--dim);line-height:2}
+footer a{color:var(--muted);text-decoration:none}
+footer a:hover{color:var(--pink)}
 </style>
 </head>
 <body>
-<div class="scanlines"></div>
+<div class="scan"></div>
+<div class="wrap">
 
-<div class="container">
-
-  <!-- Header -->
-  <header class="header">
-    <span class="logo">🐱 CAT.PET MAKER</span>
-    <p class="tagline">把你的猫变成桌面像素伙伴，兼容 Petdex / Codex</p>
-    <div class="badges">
-      <span class="badge">纯前端 · 无需服务器</span>
-      <span class="badge">照片不离开你的设备</span>
-      <span class="badge">Petdex 格式兼容</span>
-      <span class="badge">免费开源</span>
-    </div>
-  </header>
-
-  <!-- Upload Zone -->
-  <div class="upload-zone" id="uploadZone">
-    <input type="file" id="fileInput" accept="image/*">
-    <div class="upload-icon-wrap">📷</div>
-    <div class="upload-title">点击选择 / 拖拽上传</div>
-    <p class="upload-desc">
-      支持 <strong>JPG · PNG · WEBP · GIF</strong><br>
-      照片只在你的浏览器里处理，不会上传到任何服务器
-    </p>
+<header class="hdr">
+  <span class="logo">🐱 CAT.PET MAKER</span>
+  <p class="sub">把你的猫变成桌面像素伙伴，兼容 Petdex / Codex</p>
+  <div class="badges">
+    <span class="badge">纯前端 · 无服务器</span>
+    <span class="badge">照片不离开设备</span>
+    <span class="badge">Petdex 格式兼容</span>
+    <span class="badge">免费开源</span>
   </div>
+</header>
 
-  <!-- Preview -->
-  <div class="preview-grid">
-    <div class="panel">
-      <div class="panel-title">📸 原始照片</div>
-      <div class="photo-placeholder" id="photoPlaceholder">🐱</div>
-      <img id="photoPreview" class="photo-preview" alt="猫咪照片">
-    </div>
-    <div class="panel">
-      <div class="panel-title">🎮 像素化预览</div>
-      <div class="pixel-canvas-wrap">
-        <div class="pixel-placeholder" id="pixelPlaceholder">上传照片后<br>自动像素化</div>
-        <canvas id="pixelCanvas"></canvas>
-      </div>
-    </div>
-  </div>
-
-  <!-- Generate -->
-  <button class="btn-generate" id="generateBtn" disabled>
-    ✦ 生成精灵动画
-  </button>
-
-  <div class="progress-wrap" id="progressWrap">
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill"></div>
-    </div>
-    <div class="progress-text" id="progressText"></div>
-  </div>
-
-  <hr class="divider">
-
-  <!-- Spritesheet -->
-  <div id="spriteSection" class="panel">
-    <div class="panel-title">🗂 精灵表（Spritesheet）</div>
-    <div class="spritesheet-scroll">
-      <canvas id="spritesheetCanvas"></canvas>
-    </div>
-    <p class="helper">
-      标准格式 <span class="mono">1536 × 1872</span>，8列 × 9行，每帧 <span class="mono">192 × 208px</span>，与 Petdex / Codex 完全兼容。
-    </p>
-  </div>
-
-  <!-- Desktop Preview -->
-  <div id="desktopSection" class="panel">
-    <div class="panel-title">🖥 桌面预览（可拖动）</div>
-    <div class="desktop-preview" id="desktopPreview">
-      <div class="desktop-icons">
-        <div class="desktop-icon">📁</div>
-        <div class="desktop-icon">🌐</div>
-        <div class="desktop-icon">⚙️</div>
-      </div>
-      <div class="status-badge s-idle" id="statusBadge">IDLE</div>
-      <div class="desktop-pet" id="desktopPet">
-        <canvas id="petSpriteCanvas" width="80" height="80"></canvas>
-      </div>
-      <div class="taskbar">
-        <div class="tb-dot" style="background:#ff5f57"></div>
-        <div class="tb-dot" style="background:#febc2e"></div>
-        <div class="tb-dot" style="background:#28c840"></div>
-        <span class="tb-text">我的桌面</span>
-      </div>
-    </div>
-
-    <div class="anim-controls">
-      <button class="anim-btn active" data-row="0" data-label="IDLE" data-cls="s-idle">待机</button>
-      <button class="anim-btn" data-row="1" data-label="RUNNING →" data-cls="s-run">右跑</button>
-      <button class="anim-btn" data-row="2" data-label="RUNNING ←" data-cls="s-run">左跑</button>
-      <button class="anim-btn" data-row="3" data-label="WAVING" data-cls="s-wave">招手</button>
-      <button class="anim-btn" data-row="4" data-label="JUMPING" data-cls="s-wave">跳跃</button>
-      <button class="anim-btn" data-row="5" data-label="FAILED" data-cls="s-fail">失败</button>
-      <button class="anim-btn" data-row="6" data-label="WAITING" data-cls="s-idle">等待</button>
-      <button class="anim-btn" data-row="8" data-label="REVIEW" data-cls="s-wave">复查</button>
-    </div>
-  </div>
-
-  <!-- Download -->
-  <div id="downloadRow">
-    <div class="dl-grid">
-      <button class="dl-btn" id="dlSpritesheet" disabled>
-        ⬇ 下载 spritesheet.webp<br>
-        <span>用于 Petdex / Codex</span>
-      </button>
-      <button class="dl-btn" id="dlJson" disabled>
-        ⬇ 下载 pet.json<br>
-        <span>宠物元数据</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- Install Guide -->
-  <div id="installGuide">
-    <div class="panel">
-      <div class="panel-title">🚀 安装到桌面（Petdex + Codex）</div>
-      <div class="code-block">
-        <div class="code-line"><span class="c-comment"># 1. 创建宠物目录</span></div>
-        <div class="code-line"><span class="c-cmd">mkdir -p</span> <span class="c-arg">~/.codex/pets/my-cat</span></div>
-        <div class="code-line">&nbsp;</div>
-        <div class="code-line"><span class="c-comment"># 2. 将下载的两个文件放入该目录</span></div>
-        <div class="code-line"><span class="c-cmd">mv</span> <span class="c-arg">spritesheet.webp</span> <span class="c-cmd">~/.codex/pets/my-cat/</span></div>
-        <div class="code-line"><span class="c-cmd">mv</span> <span class="c-arg">pet.json</span> <span class="c-cmd">~/.codex/pets/my-cat/</span></div>
-        <div class="code-line">&nbsp;</div>
-        <div class="code-line"><span class="c-comment"># 3. 安装 Petdex 桌面应用</span></div>
-        <div class="code-line"><span class="c-cmd">npx petdex install desktop</span></div>
-        <div class="code-line"><span class="c-cmd">npx petdex hooks install</span></div>
-        <div class="code-line"><span class="c-cmd">npx petdex desktop start</span></div>
-      </div>
-      <p class="helper" style="margin-top:0.75rem">
-        然后在 Codex 中 <span class="mono">Settings → Appearance → Pets</span> 选择 my-cat ✦<br>
-        或直接用 <span class="mono">npx petdex toggle</span> 唤醒桌面宠物
-      </p>
-    </div>
-  </div>
-
-  <!-- Steps -->
-  <div class="steps-grid">
-    <div class="step-card">
-      <div class="step-num">01</div>
-      <div class="step-title">上传照片</div>
-      <div class="step-desc">任意角度均可，侧面轮廓清晰效果最佳</div>
-    </div>
-    <div class="step-card">
-      <div class="step-num">02</div>
-      <div class="step-title">生成精灵</div>
-      <div class="step-desc">自动生成 9 种动画状态的 72 帧像素精灵</div>
-    </div>
-    <div class="step-card">
-      <div class="step-num">03</div>
-      <div class="step-title">放到桌面</div>
-      <div class="step-desc">下载两个文件，配合 Petdex CLI 即可运行</div>
-    </div>
-  </div>
-
-  <footer>
-    纯前端实现 · 所有处理在本地浏览器完成 · 照片不会离开你的设备<br>
-    灵感来源：<a href="https://petdex.crafter.run" target="_blank">Petdex</a> ·
-    兼容格式：<a href="https://github.com/crafter-station/petdex" target="_blank">crafter-station/petdex</a>
-  </footer>
-
+<div class="upzone" id="upzone">
+  <input type="file" id="fileInput" accept="image/*">
+  <div class="up-icon">📷</div>
+  <div class="up-title">点击选择 / 拖拽上传</div>
+  <p class="up-desc">支持 <strong>JPG · PNG · WEBP</strong><br>照片只在浏览器本地处理，不上传服务器</p>
 </div>
 
+<div class="pgrid">
+  <div class="panel">
+    <div class="ptitle">📸 原始照片</div>
+    <div class="ph" id="ph">🐱</div>
+    <img id="photoPreview" alt="猫咪照片">
+  </div>
+  <div class="panel">
+    <div class="ptitle">🎮 像素预览</div>
+    <div class="pcwrap">
+      <div class="pphold" id="pphold">上传照片后<br>自动像素化</div>
+      <canvas id="pixelCanvas"></canvas>
+    </div>
+  </div>
+</div>
+
+<button class="genbtn" id="genBtn" disabled>✦ 生成精灵动画</button>
+
+<div class="progwrap" id="progwrap">
+  <div class="progbar"><div class="progfill" id="progfill"></div></div>
+  <div class="progtxt" id="progtxt"></div>
+</div>
+
+<hr class="div">
+
+<div id="spriteSection" class="panel">
+  <div class="ptitle">🗂 精灵表 Spritesheet</div>
+  <div class="ss-scroll"><canvas id="spritesheetCanvas"></canvas></div>
+  <p class="helper">标准格式 <span class="mono">1536×1872</span>，8列×9行，每帧 <span class="mono">192×208px</span>，与 Petdex/Codex 完全兼容</p>
+</div>
+
+<div id="desktopSection" class="panel">
+  <div class="ptitle">🖥 桌面预览（可拖动小猫）</div>
+  <div class="deskprev" id="deskprev">
+    <div class="deskicons">
+      <div class="deskicon">📁</div>
+      <div class="deskicon">🌐</div>
+      <div class="deskicon">⚙️</div>
+    </div>
+    <div class="sbadge s-idle" id="sbadge">IDLE</div>
+    <div class="dpet" id="dpet">
+      <canvas id="petCanvas" width="96" height="96"></canvas>
+    </div>
+    <div class="taskbar">
+      <div class="tbdot" style="background:#ff5f57"></div>
+      <div class="tbdot" style="background:#febc2e"></div>
+      <div class="tbdot" style="background:#28c840"></div>
+      <span class="tbtxt">我的桌面</span>
+    </div>
+  </div>
+  <div class="actrl" id="actrl">
+    <button class="abtn active" data-row="0" data-lbl="IDLE" data-cls="s-idle">待机</button>
+    <button class="abtn" data-row="1" data-lbl="RUN →" data-cls="s-run">右跑</button>
+    <button class="abtn" data-row="2" data-lbl="RUN ←" data-cls="s-run">左跑</button>
+    <button class="abtn" data-row="3" data-lbl="WAVING" data-cls="s-wave">招手</button>
+    <button class="abtn" data-row="4" data-lbl="JUMPING" data-cls="s-wave">跳跃</button>
+    <button class="abtn" data-row="5" data-lbl="FAILED" data-cls="s-fail">失败</button>
+    <button class="abtn" data-row="6" data-lbl="WAITING" data-cls="s-idle">等待</button>
+    <button class="abtn" data-row="8" data-lbl="REVIEW" data-cls="s-wave">复查</button>
+  </div>
+</div>
+
+<div id="dlrow">
+  <div class="dlgrid">
+    <button class="dlbtn" id="dlSS" disabled>⬇ spritesheet.webp<br><span>Petdex / Codex 用</span></button>
+    <button class="dlbtn" id="dlJSON" disabled>⬇ pet.json<br><span>宠物元数据</span></button>
+  </div>
+</div>
+
+<div id="guide">
+  <div class="panel">
+    <div class="ptitle">🚀 安装到桌面</div>
+    <div class="codeblock">
+      <div class="cl"><span class="cc"># 1. 创建目录</span></div>
+      <div class="cl">mkdir -p <span class="ca">~/.codex/pets/my-cat</span></div>
+      <div class="cl">&nbsp;</div>
+      <div class="cl"><span class="cc"># 2. 放入下载的两个文件</span></div>
+      <div class="cl">mv <span class="ca">spritesheet.webp pet.json</span> ~/.codex/pets/my-cat/</div>
+      <div class="cl">&nbsp;</div>
+      <div class="cl"><span class="cc"># 3. 启动桌面宠物</span></div>
+      <div class="cl">npx petdex install desktop</div>
+      <div class="cl">npx petdex hooks install</div>
+      <div class="cl">npx petdex desktop start</div>
+    </div>
+    <p class="helper" style="margin-top:.75rem">在 Codex 中 <span class="mono">Settings → Appearance → Pets</span> 选择 my-cat ✦</p>
+  </div>
+</div>
+
+<div class="sgrid">
+  <div class="scard"><div class="snum">01</div><div class="stitle">上传照片</div><div class="sdesc">任意角度均可，轮廓清晰效果最佳</div></div>
+  <div class="scard"><div class="snum">02</div><div class="stitle">生成精灵</div><div class="sdesc">自动提取猫咪特征，生成 72 帧像素动画</div></div>
+  <div class="scard"><div class="snum">03</div><div class="stitle">放到桌面</div><div class="sdesc">下载两个文件，配合 Petdex CLI 运行</div></div>
+</div>
+
+<footer>
+  纯前端实现 · 照片不离开你的设备 ·
+  灵感：<a href="https://petdex.crafter.run" target="_blank">Petdex</a>
+</footer>
+
+</div><!-- wrap -->
+
 <script>
-(function() {
-  'use strict';
+(function(){
+'use strict';
 
-  const FRAME_W = 192, FRAME_H = 208, COLS = 8, ROWS = 9;
-  const SS_W = FRAME_W * COLS, SS_H = FRAME_H * ROWS;
+/* ═══════════════════════════════════════════
+   CONSTANTS
+═══════════════════════════════════════════ */
+const FW=192, FH=208, COLS=8, ROWS=9;
+const SSW=FW*COLS, SSH=FH*ROWS;
+// Pixel size for sprite drawing (higher = blockier but clearer)
+const PX=8;
+// Cat body proportions in pixel-art units (each unit = PX px)
+const CW=16, CH=18; // body grid: 16 wide, 18 tall
 
-  const STATES = [
-    { name: 'idle',          label: 'IDLE',       row: 0 },
-    { name: 'running-right', label: 'RUNNING →',  row: 1 },
-    { name: 'running-left',  label: 'RUNNING ←',  row: 2 },
-    { name: 'waving',        label: 'WAVING',      row: 3 },
-    { name: 'jumping',       label: 'JUMPING',     row: 4 },
-    { name: 'failed',        label: 'FAILED',      row: 5 },
-    { name: 'waiting',       label: 'WAITING',     row: 6 },
-    { name: 'running',       label: 'RUNNING',     row: 7 },
-    { name: 'review',        label: 'REVIEW',      row: 8 },
-  ];
+const STATES=[
+  {name:'idle',         lbl:'IDLE',    cls:'s-idle'},
+  {name:'running-right',lbl:'RUN →',   cls:'s-run'},
+  {name:'running-left', lbl:'RUN ←',   cls:'s-run'},
+  {name:'waving',       lbl:'WAVING',  cls:'s-wave'},
+  {name:'jumping',      lbl:'JUMPING', cls:'s-wave'},
+  {name:'failed',       lbl:'FAILED',  cls:'s-fail'},
+  {name:'waiting',      lbl:'WAITING', cls:'s-idle'},
+  {name:'running',      lbl:'RUN',     cls:'s-run'},
+  {name:'review',       lbl:'REVIEW',  cls:'s-wave'},
+];
 
-  let uploadedImage = null;
-  let palette = [];
-  let pixelFrames = []; // pixelFrames[row][frame] = offscreen canvas
-  let currentRow = 0;
-  let animFrame = 0;
-  let animTimer = null;
-  let catSlug = 'my-cat';
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
+let img=null, pal=[], frames=[], curRow=0, animF=0, animT=null, slug='my-cat';
 
-  // DOM refs
-  const fileInput        = document.getElementById('fileInput');
-  const uploadZone       = document.getElementById('uploadZone');
-  const photoPreview     = document.getElementById('photoPreview');
-  const photoPlaceholder = document.getElementById('photoPlaceholder');
-  const pixelCanvas      = document.getElementById('pixelCanvas');
-  const pixelCtx         = pixelCanvas.getContext('2d');
-  const pixelPlaceholder = document.getElementById('pixelPlaceholder');
-  const generateBtn      = document.getElementById('generateBtn');
-  const progressWrap     = document.getElementById('progressWrap');
-  const progressFill     = document.getElementById('progressFill');
-  const progressText     = document.getElementById('progressText');
-  const spritesheetCanvas = document.getElementById('spritesheetCanvas');
-  const ssCtx            = spritesheetCanvas.getContext('2d');
-  const petSpriteCanvas  = document.getElementById('petSpriteCanvas');
-  const petCtx           = petSpriteCanvas.getContext('2d');
-  const statusBadge      = document.getElementById('statusBadge');
-  const desktopPet       = document.getElementById('desktopPet');
+/* ═══════════════════════════════════════════
+   DOM
+═══════════════════════════════════════════ */
+const upzone   = document.getElementById('upzone');
+const fileIn   = document.getElementById('fileInput');
+const photo    = document.getElementById('photoPreview');
+const ph       = document.getElementById('ph');
+const pxCv     = document.getElementById('pixelCanvas');
+const pxCtx    = pxCv.getContext('2d');
+const pphold   = document.getElementById('pphold');
+const genBtn   = document.getElementById('genBtn');
+const progwrap = document.getElementById('progwrap');
+const progfill = document.getElementById('progfill');
+const progtxt  = document.getElementById('progtxt');
+const ssCv     = document.getElementById('spritesheetCanvas');
+const ssCtx    = ssCv.getContext('2d');
+const petCv    = document.getElementById('petCanvas');
+const petCtx   = petCv.getContext('2d');
+const sbadge   = document.getElementById('sbadge');
+const dpet     = document.getElementById('dpet');
 
-  // ── Drag & drop ──
-  uploadZone.addEventListener('dragover', e => {
-    e.preventDefault();
-    uploadZone.classList.add('dragover');
-  });
-  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
-  uploadZone.addEventListener('drop', e => {
-    e.preventDefault();
-    uploadZone.classList.remove('dragover');
-    const f = e.dataTransfer.files[0];
-    if (f && f.type.startsWith('image/')) loadFile(f);
-  });
+/* ═══════════════════════════════════════════
+   UPLOAD
+═══════════════════════════════════════════ */
+upzone.addEventListener('dragover',e=>{e.preventDefault();upzone.classList.add('over')});
+upzone.addEventListener('dragleave',()=>upzone.classList.remove('over'));
+upzone.addEventListener('drop',e=>{e.preventDefault();upzone.classList.remove('over');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))load(f)});
+fileIn.addEventListener('change',e=>{if(e.target.files[0])load(e.target.files[0])});
 
-  fileInput.addEventListener('change', e => {
-    if (e.target.files[0]) loadFile(e.target.files[0]);
-  });
-
-  function loadFile(file) {
-    catSlug = file.name
-      .replace(/\.[^.]+$/, '')
-      .replace(/[^a-z0-9]/gi, '-')
-      .toLowerCase()
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '') || 'my-cat';
-
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const img = new Image();
-      img.onload = () => {
-        uploadedImage = img;
-        photoPreview.src = ev.target.result;
-        photoPreview.style.display = 'block';
-        photoPlaceholder.style.display = 'none';
-        buildPixelPreview(img);
-        generateBtn.disabled = false;
-      };
-      img.src = ev.target.result;
+function load(f){
+  slug=f.name.replace(/\.[^.]+$/,'').replace(/[^a-z0-9]/gi,'-').toLowerCase().replace(/-+/g,'-').replace(/^-|-$/g,'')||'my-cat';
+  const r=new FileReader();
+  r.onload=ev=>{
+    const i=new Image();
+    i.onload=()=>{
+      img=i;
+      photo.src=ev.target.result;
+      photo.style.display='block';
+      ph.style.display='none';
+      buildPreview(i);
+      genBtn.disabled=false;
     };
-    reader.readAsDataURL(file);
+    i.src=ev.target.result;
+  };
+  r.readAsDataURL(f);
+}
+
+/* ═══════════════════════════════════════════
+   COLOUR EXTRACTION
+   Returns array of [r,g,b] sorted by frequency
+═══════════════════════════════════════════ */
+function extractPalette(imgEl, n){
+  const c=document.createElement('canvas');
+  c.width=32;c.height=32;
+  const ctx=c.getContext('2d');
+  ctx.drawImage(imgEl,0,0,32,32);
+  const d=ctx.getImageData(0,0,32,32).data;
+  const map={};
+  for(let i=0;i<d.length;i+=4){
+    if(d[i+3]<80)continue;
+    // quantise into 5-bit per channel buckets
+    const key=((d[i]>>3)<<10)|((d[i+1]>>3)<<5)|(d[i+2]>>3);
+    map[key]=(map[key]||0)+1;
   }
-
-  // ── Quick 32×32 pixel preview ──
-  function buildPixelPreview(img) {
-    const SIZE = 32;
-    pixelCanvas.width = SIZE;
-    pixelCanvas.height = SIZE;
-    const tmp = document.createElement('canvas');
-    tmp.width = SIZE; tmp.height = SIZE;
-    const tCtx = tmp.getContext('2d');
-    tCtx.drawImage(img, 0, 0, SIZE, SIZE);
-    pixelCtx.imageSmoothingEnabled = false;
-    pixelCtx.drawImage(tmp, 0, 0);
-    pixelPlaceholder.style.display = 'none';
-    pixelCanvas.style.display = 'block';
-  }
-
-  // ── Colour quantisation (simple median-cut–style bucket) ──
-  function extractPalette(img, count) {
-    const c = document.createElement('canvas');
-    c.width = 24; c.height = 24;
-    const ctx = c.getContext('2d');
-    ctx.drawImage(img, 0, 0, 24, 24);
-    const d = ctx.getImageData(0, 0, 24, 24).data;
-    const map = {};
-    for (let i = 0; i < d.length; i += 4) {
-      if (d[i+3] < 50) continue;
-      const key = [
-        Math.round(d[i]   / 24) * 24,
-        Math.round(d[i+1] / 24) * 24,
-        Math.round(d[i+2] / 24) * 24,
-      ].join(',');
-      map[key] = (map[key] || 0) + 1;
-    }
-    return Object.entries(map)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, count)
-      .map(([k]) => k.split(',').map(Number));
-  }
-
-  function nearestColor(r, g, b, pal) {
-    let best = pal[0], dist = Infinity;
-    for (const c of pal) {
-      const d = (c[0]-r)**2 + (c[1]-g)**2 + (c[2]-b)**2;
-      if (d < dist) { dist = d; best = c; }
-    }
-    return best;
-  }
-
-  // ── Draw one sprite frame onto a canvas ──
-  function drawFrame(ctx, img, stateIdx, frameIdx, w, h, pal) {
-    ctx.clearRect(0, 0, w, h);
-    const PIXEL = Math.max(3, Math.floor(w / 14));
-    const cols = Math.floor(w / PIXEL);
-    const rows = Math.floor(h / PIXEL);
-
-    // Sample image at pixel-art resolution
-    const src = document.createElement('canvas');
-    src.width = cols; src.height = rows;
-    const sCtx = src.getContext('2d');
-    sCtx.drawImage(img, 0, 0, cols, rows);
-    const sd = sCtx.getImageData(0, 0, cols, rows).data;
-
-    // Per-state transform params
-    const t = frameIdx / COLS;
-    const tau = t * Math.PI * 2;
-
-    let bobY    = 0;
-    let flip    = false;
-    let squashY = 1;
-    let brightness = 1;
-    let shakeX  = 0;
-
-    switch (stateIdx) {
-      case 0: // idle — gentle bob + blink
-        bobY = Math.sin(tau) * 0.6;
-        break;
-      case 1: // running right
-        bobY = Math.abs(Math.sin(tau)) * -1.2;
-        break;
-      case 2: // running left
-        bobY = Math.abs(Math.sin(tau)) * -1.2;
-        flip = true;
-        break;
-      case 3: // waving
-        bobY = Math.sin(tau) * 1.5;
-        break;
-      case 4: // jumping
-        bobY = -Math.abs(Math.sin(tau)) * 4;
-        squashY = 1 + Math.sin(tau) * 0.12;
-        break;
-      case 5: // failed
-        brightness = 0.45 + Math.abs(Math.sin(tau * 2)) * 0.3;
-        shakeX = (frameIdx % 2 === 0 ? 1 : -1) * 1;
-        break;
-      case 6: // waiting
-        bobY = Math.sin(tau * 0.5) * 0.4;
-        break;
-      case 7: // running (fast)
-        bobY = Math.abs(Math.sin(tau * 1.5)) * -1.5;
-        break;
-      case 8: // review
-        bobY = Math.sin(tau * 0.75) * 0.5;
-        brightness = 0.75 + Math.sin(tau) * 0.25;
-        break;
-    }
-
-    if (flip) { ctx.save(); ctx.scale(-1, 1); ctx.translate(-w, 0); }
-
-    const offY = Math.round(bobY);
-    const offX = Math.round(shakeX);
-
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        const idx = (row * cols + col) * 4;
-        const a = sd[idx + 3];
-        if (a < 40) continue;
-
-        const [nr, ng, nb] = nearestColor(sd[idx], sd[idx+1], sd[idx+2], pal);
-        const yr = Math.round(row + offY + (row - rows * 0.5) * (squashY - 1));
-        const xr = col + offX;
-
-        const px = xr * PIXEL;
-        const py = yr * PIXEL;
-        if (px < 0 || px >= w || py < 0 || py >= h) continue;
-
-        ctx.fillStyle = `rgb(${Math.min(255, (nr * brightness)|0)},${Math.min(255, (ng * brightness)|0)},${Math.min(255, (nb * brightness)|0)})`;
-        ctx.fillRect(px, py, PIXEL, PIXEL);
-      }
-    }
-
-    // Waving arm overlay
-    if (stateIdx === 3 && frameIdx < 4) {
-      const armClr = pal[1] ? `rgb(${pal[1].join(',')})` : '#fff';
-      ctx.fillStyle = armClr;
-      const ax = flip ? Math.round(cols * 0.3) * PIXEL - PIXEL : Math.round(cols * 0.65) * PIXEL;
-      const ay = Math.round(rows * 0.28) * PIXEL + offY;
-      ctx.fillRect(ax, ay - PIXEL * 2, PIXEL * 3, PIXEL * 2);
-    }
-
-    // Running legs
-    if (stateIdx === 1 || stateIdx === 2 || stateIdx === 7) {
-      const legPhase = Math.sin(tau * 2);
-      const legClr = pal[2] ? `rgb(${pal[2].join(',')})` : '#888';
-      ctx.fillStyle = legClr;
-      const lBase = h - PIXEL * 2;
-      ctx.fillRect(Math.round(w * 0.3) + legPhase * 3, lBase, PIXEL * 2, PIXEL * 2);
-      ctx.fillRect(Math.round(w * 0.6) - legPhase * 3, lBase, PIXEL * 2, PIXEL * 2);
-    }
-
-    // Blink
-    if (stateIdx === 0 && frameIdx === 5) {
-      ctx.fillStyle = '#000';
-      const ey = Math.round(rows * 0.33) * PIXEL + offY;
-      ctx.fillRect(Math.round(cols * 0.32) * PIXEL, ey, PIXEL, 2);
-      ctx.fillRect(Math.round(cols * 0.57) * PIXEL, ey, PIXEL, 2);
-    }
-
-    if (flip) ctx.restore();
-  }
-
-  // ── Main generation ──
-  generateBtn.addEventListener('click', async () => {
-    if (!uploadedImage) return;
-    generateBtn.disabled = true;
-    progressWrap.style.display = 'block';
-    progressText.textContent = '提取色板...';
-    await tick();
-
-    palette = extractPalette(uploadedImage, 14);
-
-    spritesheetCanvas.width  = SS_W;
-    spritesheetCanvas.height = SS_H;
-    ssCtx.clearRect(0, 0, SS_W, SS_H);
-    pixelFrames = [];
-
-    for (let row = 0; row < ROWS; row++) {
-      progressFill.style.width = ((row / ROWS) * 90 + 2) + '%';
-      progressText.textContent = `生成 ${STATES[row].label} 动画... (${row+1}/${ROWS})`;
-      await tick();
-
-      const rowFrames = [];
-      for (let f = 0; f < COLS; f++) {
-        const off = document.createElement('canvas');
-        off.width = FRAME_W; off.height = FRAME_H;
-        const ctx = off.getContext('2d');
-        drawFrame(ctx, uploadedImage, row, f, FRAME_W, FRAME_H, palette);
-        ssCtx.drawImage(off, f * FRAME_W, row * FRAME_H);
-        rowFrames.push(off);
-      }
-      pixelFrames.push(rowFrames);
-    }
-
-    progressFill.style.width = '100%';
-    progressText.textContent = '✦ 完成！';
-
-    // Show sections
-    document.getElementById('spriteSection').style.display = 'block';
-    document.getElementById('desktopSection').style.display = 'block';
-    document.getElementById('downloadRow').style.display = 'block';
-    document.getElementById('installGuide').style.display = 'block';
-    document.getElementById('dlSpritesheet').disabled = false;
-    document.getElementById('dlJson').disabled = false;
-
-    // Scale spritesheet display
-    const maxDisplayW = Math.min(SS_W * 0.25, 380);
-    spritesheetCanvas.style.width  = maxDisplayW + 'px';
-    spritesheetCanvas.style.height = (maxDisplayW / SS_W * SS_H) + 'px';
-
-    generateBtn.disabled = false;
-    startAnim(0);
-
-    // Scroll to desktop preview
-    document.getElementById('desktopSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-
-  function tick() { return new Promise(r => setTimeout(r, 16)); }
-
-  // ── Animation loop ──
-  function startAnim(row) {
-    clearInterval(animTimer);
-    currentRow = row;
-    animFrame = 0;
-    animTimer = setInterval(() => {
-      if (!pixelFrames[currentRow]) return;
-      const frame = pixelFrames[currentRow][animFrame % COLS];
-      petCtx.imageSmoothingEnabled = false;
-      petCtx.clearRect(0, 0, 80, 80);
-      petCtx.drawImage(frame, 0, 0, 80, 80);
-      animFrame = (animFrame + 1) % COLS;
-    }, 130);
-  }
-
-  document.querySelectorAll('.anim-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.anim-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const row = parseInt(btn.dataset.row);
-      statusBadge.textContent = btn.dataset.label;
-      statusBadge.className = 'status-badge ' + btn.dataset.cls;
-      startAnim(row);
+  return Object.entries(map)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,n)
+    .map(([k])=>{
+      const v=parseInt(k);
+      return [((v>>10)&31)<<3, ((v>>5)&31)<<3, (v&31)<<3];
     });
-  });
+}
 
-  // ── Drag pet in preview ──
-  let dragging = false, dragOffX = 0, dragOffY = 0;
+function nearest(r,g,b,p){
+  let best=p[0],d=Infinity;
+  for(const c of p){const dd=(c[0]-r)**2+(c[1]-g)**2+(c[2]-b)**2;if(dd<d){d=dd;best=c;}}
+  return best;
+}
 
-  desktopPet.addEventListener('mousedown', e => {
-    dragging = true;
-    const r = desktopPet.getBoundingClientRect();
-    dragOffX = e.clientX - r.left;
-    dragOffY = e.clientY - r.top;
-    desktopPet.style.animation = 'none';
-    e.preventDefault();
-  });
+/* ═══════════════════════════════════════════
+   QUICK PIXEL PREVIEW (32×32 → displayed big)
+═══════════════════════════════════════════ */
+function buildPreview(i){
+  const S=32;
+  pxCv.width=S;pxCv.height=S;
+  const t=document.createElement('canvas');t.width=S;t.height=S;
+  t.getContext('2d').drawImage(i,0,0,S,S);
+  pxCtx.imageSmoothingEnabled=false;
+  pxCtx.drawImage(t,0,0);
+  pphold.style.display='none';
+  pxCv.style.display='block';
+  pxCv.style.width='144px';
+  pxCv.style.height='144px';
+}
 
-  document.addEventListener('mousemove', e => {
-    if (!dragging) return;
-    const pr = document.getElementById('desktopPreview').getBoundingClientRect();
-    let nx = e.clientX - pr.left - dragOffX;
-    let ny = e.clientY - pr.top  - dragOffY;
-    nx = Math.max(0, Math.min(pr.width  - 80, nx));
-    ny = Math.max(0, Math.min(pr.height - 80 - 36, ny));
-    desktopPet.style.right  = 'auto';
-    desktopPet.style.bottom = 'auto';
-    desktopPet.style.left   = nx + 'px';
-    desktopPet.style.top    = ny + 'px';
-  });
+/* ═══════════════════════════════════════════
+   PIXEL-ART CAT DRAWING ENGINE
+   
+   We draw a stylised cat character whose colours
+   are taken from the uploaded photo's palette.
+   
+   Body is laid out on a CW×CH grid (each cell = PX px).
+   
+   Layout (y from top, x from left):
+     row 0-1   : ears
+     row 2-5   : head
+     row 6-11  : body
+     row 12-17 : legs / tail
+═══════════════════════════════════════════ */
 
-  document.addEventListener('mouseup', () => {
-    if (dragging) { dragging = false; desktopPet.style.animation = ''; }
-  });
+// Fill a rect in pixel units
+function pr(ctx,x,y,w,h,col){
+  ctx.fillStyle=`rgb(${col[0]},${col[1]},${col[2]})`;
+  ctx.fillRect(x*PX, y*PX, w*PX, h*PX);
+}
 
-  // ── Downloads ──
-  document.getElementById('dlSpritesheet').addEventListener('click', () => {
-    spritesheetCanvas.toBlob(blob => {
-      triggerDownload(URL.createObjectURL(blob), 'spritesheet.webp');
-    }, 'image/webp', 0.95);
-  });
+// Darken a colour by factor
+function dark(col, f=0.6){return col.map(c=>Math.round(c*f));}
+// Lighten
+function light(col,f=1.35){return col.map(c=>Math.min(255,Math.round(c*f)));}
+// Mix two colours
+function mix(a,b,t=0.5){return a.map((v,i)=>Math.round(v*(1-t)+b[i]*t));}
 
-  document.getElementById('dlJson').addEventListener('click', () => {
-    const meta = {
-      id: catSlug,
-      displayName: catSlug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
-      description: `${catSlug} — a custom cat companion generated from a real photo.`,
-      spritesheetPath: 'spritesheet.webp',
-      states: STATES.map(s => ({
-        name: s.name,
-        row: s.row,
-        frames: COLS,
-        duration: 130,
-      })),
-    };
-    const blob = new Blob([JSON.stringify(meta, null, 2)], { type: 'application/json' });
-    triggerDownload(URL.createObjectURL(blob), 'pet.json');
-  });
+function drawCat(ctx, stateIdx, frameIdx, p){
+  const W=FW, H=FH;
+  ctx.clearRect(0,0,W,H);
 
-  function triggerDownload(url, filename) {
-    const a = document.createElement('a');
-    a.href = url; a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  // Palette roles
+  const body  = p[0]||[180,140,100];
+  const dark1 = dark(body);
+  const light1= light(body);
+  const shadow= dark(body,0.45);
+  const eye   = [30,20,40];
+  const nose  = [220,120,140];
+  const inner = mix(body,[255,220,200],0.45); // inner ear
+  const white = light(body,1.6);
+  const stripe= p[1]||dark(body,0.72);
+
+  // Per-state animation params
+  const f=frameIdx, tau=(f/COLS)*Math.PI*2;
+
+  // Offsets / transforms per state
+  let bobY=0, legPhase=0, eyeClose=false, flip=false, squash=1, stretch=1;
+  let shakeX=0, tailUp=false, armUp=false, sitDown=false;
+  let dimmed=false, spinning=false;
+
+  switch(stateIdx){
+    case 0: // idle – gentle bob, blink every ~6 frames
+      bobY=Math.round(Math.sin(tau)*0.6);
+      eyeClose=(f===5);
+      tailUp=(f<4);
+      break;
+    case 1: // run right
+      legPhase=f;flip=false;
+      bobY=f%2===0?-1:0;
+      break;
+    case 2: // run left
+      legPhase=f;flip=true;
+      bobY=f%2===0?-1:0;
+      break;
+    case 3: // waving
+      bobY=Math.round(Math.sin(tau)*1.2);
+      armUp=(f<5);
+      tailUp=true;
+      eyeClose=(f===7);
+      break;
+    case 4: // jumping
+      bobY=-Math.round(Math.abs(Math.sin(tau))*4);
+      squash=f<2||f>5?1.15:0.88;
+      stretch=f<2||f>5?0.88:1.12;
+      break;
+    case 5: // failed
+      shakeX=(f%2===0)?1:-1;
+      dimmed=true;
+      eyeClose=true;
+      sitDown=true;
+      break;
+    case 6: // waiting – sit and look around
+      sitDown=true;
+      eyeClose=(f===3||f===4);
+      tailUp=(f%4<2);
+      bobY=Math.round(Math.sin(tau*0.5)*0.5);
+      break;
+    case 7: // running fast
+      legPhase=f*1.5;flip=false;
+      bobY=f%2===0?-2:0;
+      break;
+    case 8: // review – sit and nod
+      sitDown=true;
+      bobY=Math.round(Math.sin(tau)*0.8);
+      tailUp=(f<4);
+      break;
   }
+
+  // Apply flip via transform
+  if(flip){ctx.save();ctx.scale(-1,1);ctx.translate(-W,0);}
+
+  // Offset everything by bobY + shakeX
+  const ox=shakeX*PX, oy=bobY*PX;
+  ctx.save();
+  ctx.translate(ox, oy);
+
+  // --- TAIL ---
+  if(!sitDown){
+    // tail behind body
+    const tx=11, ty=tailUp?9:10;
+    pr(ctx,tx,ty,1,4,stripe);
+    pr(ctx,tx+1,ty+1,1,3,body);
+    pr(ctx,tx,ty+4,2,1,dark1);
+    if(tailUp){
+      pr(ctx,tx+1,ty-1,1,2,body);
+      pr(ctx,tx+2,ty-2,1,1,stripe);
+    }
+  } else {
+    // sitting tail curls to side
+    pr(ctx,11,13,3,1,body);
+    pr(ctx,13,14,1,2,stripe);
+    pr(ctx,12,15,2,1,dark1);
+  }
+
+  // --- BODY ---
+  const bx=3, by=sitDown?7:6, bw=10, bh=sitDown?7:6;
+  // shadow under body
+  pr(ctx,bx+1,by+bh,bw-1,1,shadow);
+  // main body
+  pr(ctx,bx,by,bw,bh,body);
+  // belly lighter patch
+  pr(ctx,bx+2,by+1,6,bh-2,light1);
+  // stripe on back
+  pr(ctx,bx,by,2,bh,stripe);
+  pr(ctx,bx+bw-2,by,2,bh,stripe);
+
+  // --- LEGS ---
+  if(!sitDown){
+    // front legs
+    const lp=legPhase;
+    // left front
+    pr(ctx,4,(lp%2===0)?13:12,2,3,body);
+    pr(ctx,4,(lp%2===0)?15:14,2,1,dark1);
+    // right front
+    pr(ctx,7,(lp%2===1)?13:12,2,3,body);
+    pr(ctx,7,(lp%2===1)?15:14,2,1,dark1);
+    // back legs
+    pr(ctx,3,12+(lp%2===0?1:0),2,3,stripe);
+    pr(ctx,3,14+(lp%2===0?1:0),2,1,dark1);
+    pr(ctx,10,12+(lp%2===1?1:0),2,3,stripe);
+    pr(ctx,10,14+(lp%2===1?1:0),2,1,dark1);
+  } else {
+    // sitting front paws
+    pr(ctx,4,13,2,2,body);
+    pr(ctx,4,14,2,1,dark1);
+    pr(ctx,8,13,2,2,body);
+    pr(ctx,8,14,2,1,dark1);
+  }
+
+  // --- HEAD ---
+  const hx=3, hy=1, hw=10, hh=6;
+  // head base
+  pr(ctx,hx,hy,hw,hh,body);
+  // forehead stripe
+  pr(ctx,7,hy,1,2,stripe);
+  pr(ctx,6,hy,1,1,stripe);
+  // cheeks lighter
+  pr(ctx,hx,hy+3,2,2,light1);
+  pr(ctx,hx+hw-2,hy+3,2,2,light1);
+
+  // --- EARS ---
+  // left ear
+  pr(ctx,3,0,2,2,body);
+  pr(ctx,4,0,1,1,stripe);
+  pr(ctx,3,1,1,1,inner);
+  // right ear
+  pr(ctx,10,0,2,2,body);
+  pr(ctx,10,0,1,1,stripe);
+  pr(ctx,11,1,1,1,inner);
+
+  // --- FACE ---
+  // eyes
+  if(eyeClose){
+    // closed eyes (lines)
+    pr(ctx,5,hy+2,2,1,eye);
+    pr(ctx,9,hy+2,2,1,eye);
+  } else {
+    pr(ctx,5,hy+2,2,2,eye);
+    pr(ctx,9,hy+2,2,2,eye);
+    // highlight
+    pr(ctx,6,hy+2,1,1,white);
+    pr(ctx,10,hy+2,1,1,white);
+  }
+  // nose
+  pr(ctx,7,hy+3,2,1,nose);
+  // mouth
+  pr(ctx,6,hy+4,1,1,dark1);
+  pr(ctx,9,hy+4,1,1,dark1);
+  // whiskers
+  ctx.fillStyle=`rgba(${dark1[0]},${dark1[1]},${dark1[2]},0.7)`;
+  ctx.fillRect(hx*PX,(hy+3)*PX,3*PX,1);
+  ctx.fillRect((hx+hw)*PX,(hy+3)*PX,3*PX,1);
+
+  // --- ARM UP (waving) ---
+  if(armUp){
+    pr(ctx,13,hy,1,2,body);
+    pr(ctx,14,hy-1,1,2,stripe);
+    pr(ctx,14,hy-1,2,1,body);
+  }
+
+  // --- DIMMED overlay for failed ---
+  if(dimmed){
+    ctx.fillStyle='rgba(0,0,0,0.35)';
+    ctx.fillRect(0,0,W,H);
+    // X eyes
+    ctx.fillStyle=`rgb(${[180,60,60].join(',')})`;
+    ctx.fillRect((5)*PX,(hy+2)*PX,PX,PX);
+    ctx.fillRect((6)*PX,(hy+3)*PX,PX,PX);
+    ctx.fillRect((9)*PX,(hy+2)*PX,PX,PX);
+    ctx.fillRect((10)*PX,(hy+3)*PX,PX,PX);
+  }
+
+  ctx.restore();
+  if(flip)ctx.restore();
+}
+
+/* ═══════════════════════════════════════════
+   GENERATE
+═══════════════════════════════════════════ */
+genBtn.addEventListener('click',async()=>{
+  if(!img)return;
+  genBtn.disabled=true;
+  progwrap.style.display='block';
+  progtxt.textContent='提取色板...';
+  await tick();
+
+  pal=extractPalette(img,8);
+
+  ssCv.width=SSW; ssCv.height=SSH;
+  ssCtx.clearRect(0,0,SSW,SSH);
+  frames=[];
+
+  for(let row=0;row<ROWS;row++){
+    progfill.style.width=((row/ROWS)*90+2)+'%';
+    progtxt.textContent=`生成 ${STATES[row].lbl} 动画... (${row+1}/${ROWS})`;
+    await tick();
+    const rf=[];
+    for(let f=0;f<COLS;f++){
+      const oc=document.createElement('canvas');
+      oc.width=FW;oc.height=FH;
+      const octx=oc.getContext('2d');
+      drawCat(octx,row,f,pal);
+      ssCtx.drawImage(oc,f*FW,row*FH);
+      rf.push(oc);
+    }
+    frames.push(rf);
+  }
+
+  progfill.style.width='100%';
+  progtxt.textContent='✦ 完成！';
+
+  document.getElementById('spriteSection').style.display='block';
+  document.getElementById('desktopSection').style.display='block';
+  document.getElementById('dlrow').style.display='block';
+  document.getElementById('guide').style.display='block';
+  document.getElementById('dlSS').disabled=false;
+  document.getElementById('dlJSON').disabled=false;
+
+  const dw=Math.min(SSW*0.22,320);
+  ssCv.style.width=dw+'px';
+  ssCv.style.height=(dw/SSW*SSH)+'px';
+
+  genBtn.disabled=false;
+  startAnim(0);
+  document.getElementById('desktopSection').scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+function tick(){return new Promise(r=>setTimeout(r,16));}
+
+/* ═══════════════════════════════════════════
+   ANIMATION LOOP
+═══════════════════════════════════════════ */
+function startAnim(row){
+  clearInterval(animT);
+  curRow=row; animF=0;
+  animT=setInterval(()=>{
+    if(!frames[curRow])return;
+    petCtx.imageSmoothingEnabled=false;
+    petCtx.clearRect(0,0,96,96);
+    petCtx.drawImage(frames[curRow][animF%COLS],0,0,96,96);
+    animF=(animF+1)%COLS;
+  },130);
+}
+
+document.querySelectorAll('.abtn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.abtn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    sbadge.textContent=b.dataset.lbl;
+    sbadge.className='sbadge '+b.dataset.cls;
+    startAnim(parseInt(b.dataset.row));
+  });
+});
+
+/* ═══════════════════════════════════════════
+   DRAG PET
+═══════════════════════════════════════════ */
+let dragging=false,dox=0,doy=0;
+dpet.addEventListener('mousedown',e=>{
+  dragging=true;
+  const r=dpet.getBoundingClientRect();
+  dox=e.clientX-r.left; doy=e.clientY-r.top;
+  dpet.style.animation='none'; e.preventDefault();
+});
+document.addEventListener('mousemove',e=>{
+  if(!dragging)return;
+  const pr=document.getElementById('deskprev').getBoundingClientRect();
+  let nx=e.clientX-pr.left-dox, ny=e.clientY-pr.top-doy;
+  nx=Math.max(0,Math.min(pr.width-96,nx));
+  ny=Math.max(0,Math.min(pr.height-96-36,ny));
+  dpet.style.right='auto';dpet.style.bottom='auto';
+  dpet.style.left=nx+'px';dpet.style.top=ny+'px';
+});
+document.addEventListener('mouseup',()=>{if(dragging){dragging=false;dpet.style.animation=''}});
+
+/* ═══════════════════════════════════════════
+   DOWNLOADS
+═══════════════════════════════════════════ */
+document.getElementById('dlSS').addEventListener('click',()=>{
+  ssCv.toBlob(blob=>{dl(URL.createObjectURL(blob),'spritesheet.webp')},'image/webp',0.95);
+});
+document.getElementById('dlJSON').addEventListener('click',()=>{
+  const meta={
+    id:slug,
+    displayName:slug.split('-').map(w=>w[0].toUpperCase()+w.slice(1)).join(' '),
+    description:`${slug} — a custom cat companion.`,
+    spritesheetPath:'spritesheet.webp',
+    states:STATES.map((s,i)=>({name:s.name,row:i,frames:COLS,duration:130}))
+  };
+  dl(URL.createObjectURL(new Blob([JSON.stringify(meta,null,2)],{type:'application/json'})),'pet.json');
+});
+function dl(url,name){
+  const a=document.createElement('a');a.href=url;a.download=name;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),5000);
+}
+
 })();
 </script>
 </body>
